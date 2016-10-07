@@ -45,7 +45,6 @@ func main() {
 	case *verboseFlag:
 		logLevel = infoLevel
 	}
-	logLevel = debugLevel
 	log := NewLogger(logLevel)
 
 	resArgs, cmdArgs := splitArgs(flag.Args())
