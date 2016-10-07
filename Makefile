@@ -7,6 +7,7 @@ test:
 	go test -v
 
 rel:
-	GOOS=linux go build github.com/betalo-sweden/await
+	GOOS=darwin GOARCH=amd64 go build -o await-darwin-amd64 github.com/betalo-sweden/await
+	GOOS=linux  GOARCH=amd64 go build -o await-linux-amd64  github.com/betalo-sweden/await
 
-.PHONY: all build rel
+.PHONY: all build rel test

@@ -17,6 +17,10 @@ resources became available.
 
     go get -u github.com/betalo-sweden/await
 
+or
+
+    curl -o await https://github.com/betalo-sweden/await/releases/download/v0.1.0/await-linux-amd64
+
 
 ## Usage
 
