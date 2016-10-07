@@ -16,6 +16,8 @@ type postgresqlResource struct {
 
 func (r *postgresqlResource) Await(ctx context.Context) error {
 	dsnURL := r.URL
+	tags := parseTags(dsnURL.Fragment)
+	dsnURL.Fragment = ""
 	dsn := dsnURL.String()
 
 	db, err := sql.Open(r.URL.Scheme, dsn)
@@ -28,7 +30,6 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 		return ErrUnavailable
 	}
 
-	tags := parseTags(r.URL.Fragment)
 	if val, ok := tags["tables"]; ok {
 		tables := strings.Split(val, ",")
 		if err := awaitPostgreSQLTables(db, dsnURL.Path[1:], tables); err != nil {

@@ -16,6 +16,8 @@ type mysqlResource struct {
 
 func (r *mysqlResource) Await(ctx context.Context) error {
 	dsnURL := r.URL
+	tags := parseTags(dsnURL.Fragment)
+	dsnURL.Fragment = ""
 	dsnURL.Host = "tcp(" + dsnURL.Host + ")"
 	dsn := strings.TrimPrefix(dsnURL.String(), "mysql://")
 
@@ -29,7 +31,6 @@ func (r *mysqlResource) Await(ctx context.Context) error {
 		return ErrUnavailable
 	}
 
-	tags := parseTags(r.URL.Fragment)
 	if val, ok := tags["tables"]; ok {
 		tables := strings.Split(val, ",")
 		if err := awaitMySQLTables(db, dsnURL.Path[1:], tables); err != nil {
