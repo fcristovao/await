@@ -65,7 +65,7 @@ func main() {
 					log.Fatalf("Error: %v", err)
 				}
 
-				log.Debugf("Awaiting resource: %s", res)
+				log.Infof("Awaiting resource: %s", res)
 				if err := res.Await(ctx); err != nil {
 					if err == ErrUnavailable {
 						log.Debugf("Resource unavailable: %v", err)
