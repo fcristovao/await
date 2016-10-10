@@ -79,22 +79,16 @@ func (l *LevelLogger) Errorf(format string, v ...interface{}) {
 }
 
 func (l *LevelLogger) Fatal(v ...interface{}) {
-	if l.level <= errorLevel {
-		log.Print(v)
-	}
+	l.Error(v...)
 	os.Exit(1)
 }
 
 func (l *LevelLogger) Fatalln(v ...interface{}) {
-	if l.level <= errorLevel {
-		log.Println(v...)
-	}
+	l.Errorln(v...)
 	os.Exit(1)
 }
 
 func (l *LevelLogger) Fatalf(format string, v ...interface{}) {
-	if l.level <= errorLevel {
-		log.Printf(format, v...)
-	}
+	l.Errorf(format, v...)
 	os.Exit(1)
 }
