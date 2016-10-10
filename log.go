@@ -26,7 +26,7 @@ func NewLogger(level int) *LevelLogger {
 
 func (l *LevelLogger) Debug(v ...interface{}) {
 	if l.level <= debugLevel {
-		log.Print(v)
+		log.Print(v...)
 	}
 }
 
@@ -44,7 +44,7 @@ func (l *LevelLogger) Debugf(format string, v ...interface{}) {
 
 func (l *LevelLogger) Info(v ...interface{}) {
 	if l.level <= infoLevel {
-		log.Print(v)
+		log.Print(v...)
 	}
 }
 
@@ -62,7 +62,7 @@ func (l *LevelLogger) Infof(format string, v ...interface{}) {
 
 func (l *LevelLogger) Error(v ...interface{}) {
 	if l.level <= errorLevel {
-		log.Print(v)
+		log.Print(v...)
 	}
 }
 
