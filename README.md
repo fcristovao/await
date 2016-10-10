@@ -71,7 +71,11 @@ URL syntax: `file://<path>[#<fragment>]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://<dsn>[#<fragment>]`
+URL syntax: `postgres://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+
+The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+Fragment:
 
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
@@ -82,7 +86,9 @@ URL syntax: `postgres://<dsn>[#<fragment>]`
 ### MySQL Resource
 
 
-URL syntax: `mysql://<dsn>[#<fragment>]`
+URL syntax: `mysql://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+
+The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
 Fragment:
 
