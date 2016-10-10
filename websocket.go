@@ -13,5 +13,5 @@ type websocketResource struct {
 
 func (*websocketResource) Await(context.Context) error {
 	// TODO(uwe): Implement
-	return fmt.Errorf("Not yet implemented")
+	return fmt.Errorf("Not yet implemented. Pull-requests are welcome")
 }
