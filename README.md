@@ -40,7 +40,7 @@ or
 All dependant resources must be specified as URLs or escaped command.
 
 Some resources provided additional functionally encoded as fragment
-(`#{{Args}}`). The syntax has to conform to Go's _Struct Field Tag_ syntax:
+(`#<fragment>`). The syntax has to conform to Go's _Struct Field Tag_ syntax:
 `[key|key=val,...]` (no quoting supported).
 
 Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
@@ -48,22 +48,22 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 
 ### HTTP Resource
 
-URL syntax: `http[s]://[{{USER}}@]{{HOST}}[:{{PORT}}][{{PATH}}[?{{QUERY}}]]`
+URL syntax: `http[s]://[<user>@]<host>[:<port>][<path>[?<query>]]`
 
 
 ### Websocket Resource
 
-URL syntax: `ws[s]://[{{USER}}@]{{HOST}}[:{{PORT}}][{{PATH}}[?{{QUERY}}]]`
+URL syntax: `ws[s]://[<user>@]<host>[:<port>][<path>[?<query>]]`
 
 
 ### TCP Resource
 
-URL syntax: `tcp[4|6]://{{HOST}}[:{{PORT}}]`
+URL syntax: `tcp[4|6]://<host>[:<port>]`
 
 
 ### File Resource
 
-URL syntax: `file://{{PATH}}[#{{FRAGMENT}}]`
+URL syntax: `file://<path>[#<fragment>]`
 
 - `absent` key: If present, the resource is defined as available, when the
   specific file is absent, rather than existing.
@@ -71,7 +71,7 @@ URL syntax: `file://{{PATH}}[#{{FRAGMENT}}]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://{{DSN}}[#{{FRAGMENT}}]`
+URL syntax: `postgres://<dsn>[#<fragment>]`
 
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
@@ -82,7 +82,7 @@ URL syntax: `postgres://{{DSN}}[#{{FRAGMENT}}]`
 ### MySQL Resource
 
 
-URL syntax: `mysql://{{DSN}}[#{{FRAGMENT}}]`
+URL syntax: `mysql://<dsn>[#<fragment>]`
 
 Fragment:
 
@@ -97,7 +97,7 @@ Fragment:
 Does not follow the URL syntax and is used a generic fallback for invalid URLs
 (i.e. absent scheme).
 
-URL syntax: `{{PATH}} [{{ARG}}...]`
+URL syntax: `<path> [<arg>...]`
 
 
 ## Alternatives
