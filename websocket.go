@@ -1,17 +1,44 @@
 package main
 
 import (
-	"fmt"
+	"net"
+	"net/http"
 	"net/url"
+	"time"
 
 	"context"
+
+	"github.com/gorilla/websocket"
 )
 
 type websocketResource struct {
 	url.URL
 }
 
-func (*websocketResource) Await(context.Context) error {
-	// TODO(uwe): Implement
-	return fmt.Errorf("Not yet implemented. Pull-requests are welcome")
+func (r *websocketResource) Await(ctx context.Context) error {
+	netDialer := &net.Dialer{}
+	dial := func(network, address string) (net.Conn, error) {
+		return netDialer.DialContext(ctx, network, address)
+	}
+	var timeout time.Duration
+	if deadline, ok := ctx.Deadline(); ok {
+		timeout = deadline.Sub(time.Now())
+	}
+	wsDialer := &websocket.Dialer{
+		NetDial:          dial,
+		HandshakeTimeout: timeout,
+		Proxy:            http.ProxyFromEnvironment,
+	}
+
+	// IDEA(uwe): Use fragment to specify origin
+	// IDEA(uwe): Use fragment to specify subprotocol
+	// IDEA(uwe): Use fragment to specify cookies
+
+	conn, _, err := wsDialer.Dial(r.URL.String(), nil)
+	if err != nil {
+		return ErrUnavailable
+	}
+	defer conn.Close()
+
+	return nil
 }
