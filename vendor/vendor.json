@@ -9,6 +9,12 @@
 			"revisionTime": "2016-08-02T11:38:42Z"
 		},
 		{
+			"checksumSHA1": "klfNfdEPsrWYLps2qBkLgfJsNYI=",
+			"path": "github.com/gorilla/websocket",
+			"revision": "2d1e4548da234d9cb742cc3628556fef86aafbac",
+			"revisionTime": "2016-09-12T15:30:41Z"
+		},
+		{
 			"checksumSHA1": "dNYxHiBLalTqluak2/Z8c3RsSEM=",
 			"path": "github.com/lib/pq",
 			"revision": "50761b0867bd1d9d069276790bcd4a3bccf2324a",
