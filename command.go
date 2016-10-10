@@ -14,11 +14,11 @@ type commandResource struct {
 }
 
 func (r *commandResource) Await(ctx context.Context) error {
-	// FIXME(uwe): Splitting by space is brittle
 	cmdString, err := url.QueryUnescape(r.URL.Path)
 	if err != nil {
 		return err
 	}
+	// TODO(uwe): Splitting by space is brittle
 	cmdParts := strings.SplitN(cmdString, " ", 2)
 	if len(cmdParts) == 0 {
 		return fmt.Errorf("empty command")

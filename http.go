@@ -14,14 +14,14 @@ type httpResource struct {
 func (r *httpResource) Await(ctx context.Context) error {
 	client := &http.Client{}
 
-	// TODO(uwe): Use fragment to set method
+	// IDEA(uwe): Use fragment to set method
 
 	req, err := http.NewRequest("GET", r.URL.String(), nil)
 	if err != nil {
 		return err
 	}
 
-	// TODO(uwe): Use k/v pairs in fragment to set headers
+	// IDEA(uwe): Use k/v pairs in fragment to set headers
 
 	req = req.WithContext(ctx)
 
@@ -31,7 +31,7 @@ func (r *httpResource) Await(ctx context.Context) error {
 	}
 	defer resp.Body.Close()
 
-	// TODO(uwe): Use fragment to set tolerated status code
+	// IDEA(uwe): Use fragment to set tolerated status code
 
 	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 		return nil

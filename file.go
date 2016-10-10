@@ -13,11 +13,8 @@ type fileResource struct {
 }
 
 func (r *fileResource) Await(context.Context) error {
-	// Check for relative paths
-	filePath := r.URL.Path
-	if r.URL.Host != "" {
-		filePath = filepath.Join(r.URL.Host, filePath)
-	}
+	// Unify absolute and relative file paths
+	filePath := filepath.Join(r.URL.Host, r.URL.Path)
 
 	tags := parseTags(r.URL.Fragment)
 

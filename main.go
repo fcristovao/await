@@ -31,7 +31,7 @@ func main() {
 		quietFlag   = flag.Bool("q", false, "Set quiet mode")
 	)
 	flag.Usage = func() {
-		fmt.Fprintln(os.Stderr, "Usage: await [flag] [<res>...] -- <cmd>")
+		fmt.Fprintln(os.Stderr, "Usage: await [options...] <res>... [ -- <cmd>]")
 		fmt.Fprintln(os.Stderr, "Await availability of resources.")
 		fmt.Fprintln(os.Stderr)
 		flag.PrintDefaults()
