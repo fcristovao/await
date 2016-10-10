@@ -25,7 +25,7 @@ or
 ## Usage
 
     $ await -h
-    Usage: await [options...] <res>... [-- <cmd>]
+    Usage: await [options...] <res>... [ -- <cmd>]
     Await availability of resources.
 
       -f	Force running the command even after giving up
@@ -73,10 +73,10 @@ URL syntax: `file://{{PATH}}[#{{FRAGMENT}}]`
 
 URL syntax: `postgres://{{DSN}}[#{{FRAGMENT}}]`
 
-- `table[=t1,t2,...]` key-value: If key present and value absent, the resource's
-  database scheme must at least contain one table. If key present and value
-  present, the resource's database scheme must at least contain the specified
-  tables.
+- `tables[=t1,t2,...]` key-value: If key present and value absent, the
+  resource's database scheme must at least contain one table. If key present and
+  value present, the resource's database scheme must at least contain the
+  specified tables.
 
 
 ### MySQL Resource
@@ -86,10 +86,10 @@ URL syntax: `mysql://{{DSN}}[#{{FRAGMENT}}]`
 
 Fragment:
 
-- `table[=t1,t2,...]` key-value: If key present and value absent, the resource's
-  database scheme must at least contain one table. If key present and value
-  present, the resource's database scheme must at least contain the specified
-  tables.
+- `tables[=t1,t2,...]` key-value: If key present and value absent, the
+  resource's database scheme must at least contain one table. If key present and
+  value present, the resource's database scheme must at least contain the
+  specified tables.
 
 
 ### Command Resource
