@@ -48,12 +48,12 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 
 ### HTTP Resource
 
-URL syntax: `http[s]://[<user>@]<host>[:<port>][<path>[?<query>]]`
+URL syntax: `http[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
 
 
 ### Websocket Resource
 
-URL syntax: `ws[s]://[<user>@]<host>[:<port>][<path>[?<query>]]`
+URL syntax: `ws[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
 
 
 ### TCP Resource
