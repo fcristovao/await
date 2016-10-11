@@ -48,12 +48,12 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 
 ### HTTP Resource
 
-URL syntax: `http[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
+URL syntax: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### Websocket Resource
 
-URL syntax: `ws[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
+URL syntax: `ws[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### TCP Resource
@@ -71,7 +71,7 @@ URL syntax: `file://<path>[#<fragment>]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `postgres://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
@@ -93,8 +93,7 @@ Fragment:
 
 ### MySQL Resource
 
-
-URL syntax: `mysql://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `mysql://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
