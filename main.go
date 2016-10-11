@@ -67,7 +67,7 @@ func main() {
 				return
 			default:
 				res, err := identifyResource(ress[i])
-				if err != nil {
+				if err != nil { // Permanent error
 					log.Fatalf("Error: %v", err)
 				}
 
@@ -75,12 +75,12 @@ func main() {
 				if err := res.Await(ctx); err != nil {
 					if e, ok := err.(*unavailableError); ok { // transient error
 						log.Infof("Resource unavailable: %v", e)
-					} else {
+					} else { // Maybe transient error
 						log.Errorf("Error: failed to await resource: %v", err)
 					}
 					time.Sleep(retryDelay)
 				} else {
-					i++
+					i++ // Next resource
 				}
 			}
 		}
