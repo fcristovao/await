@@ -75,6 +75,14 @@ URL syntax: `postgres://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragmen
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
+DB Parameters:
+
+- `sslmode=[verify-ca|require]`: `sslmode=verify-ca` enables TLS/SSL encrypted
+  connection to the server. Use `sslmode=require` if you want to use a
+  self-signed or invalid certificate (server side). See
+  [lib/pq](https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters)
+  for more details.
+
 Fragment:
 
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
@@ -89,6 +97,14 @@ Fragment:
 URL syntax: `mysql://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+DB Parameters:
+
+- `tls=[true|skip-verify]`: `tls=true` enables TLS/SSL encrypted connection to
+  the server. Use `tls=skip-verify` if you want to use a self-signed or invalid
+  certificate (server side). See
+  [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql#tls) for more
+  details.
 
 Fragment:
 
