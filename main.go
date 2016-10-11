@@ -76,7 +76,7 @@ func main() {
 					if e, ok := err.(*unavailableError); ok { // transient error
 						log.Infof("Resource unavailable: %v", e)
 					} else {
-						log.Errorf("Error: awaiting resource: %v", err)
+						log.Errorf("Error: failed to await resource: %v", err)
 					}
 					time.Sleep(retryDelay)
 				} else {
@@ -92,7 +92,7 @@ func main() {
 	case context.Canceled:
 		log.Infoln("All resources available")
 	case context.DeadlineExceeded:
-		log.Infoln("Error: timeout exceeded")
+		log.Infoln("Timeout exceeded")
 		if !*forceFlag {
 			os.Exit(1)
 		}
@@ -101,7 +101,7 @@ func main() {
 	if len(cmdArgs) > 0 {
 		log.Infof("Runnning command: %v", cmdArgs)
 		if err := execCmd(cmdArgs); err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("Error: failed to execute command: %v", err)
 		}
 	}
 }
