@@ -18,6 +18,7 @@ type postgresqlResource struct {
 
 func (r *postgresqlResource) Await(ctx context.Context) error {
 	dsnURL := r.URL
+	// Parse and remove tags from fragment
 	tags := parseTags(dsnURL.Fragment)
 	dsnURL.Fragment = ""
 	// Disable TLS/SSL by default
