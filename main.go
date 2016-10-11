@@ -15,7 +15,7 @@ import (
 
 const retryDelay = 500 * time.Millisecond
 
-type Resource interface {
+type resource interface {
 	fmt.Stringer
 	Await(context.Context) error
 }
@@ -129,7 +129,7 @@ func parseResources(urlArgs []string) ([]url.URL, error) {
 	return urls, nil
 }
 
-func identifyResource(u url.URL) (Resource, error) {
+func identifyResource(u url.URL) (resource, error) {
 	switch u.Scheme {
 	case "http", "https":
 		return &httpResource{u}, nil
