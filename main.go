@@ -99,7 +99,7 @@ func main() {
 	}
 
 	if len(cmdArgs) > 0 {
-		log.Debugf("Runnning command: %v", cmdArgs)
+		log.Infof("Runnning command: %v", cmdArgs)
 		if err := execCmd(cmdArgs); err != nil {
 			log.Fatalf("Error: %v", err)
 		}
