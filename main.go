@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"net/url"
@@ -21,7 +20,14 @@ type Resource interface {
 	Await(context.Context) error
 }
 
-var ErrUnavailable = errors.New("resource unavailable")
+type unavailableError struct {
+	Reason error
+}
+
+// Error implements the error interface.
+func (e *unavailableError) Error() string {
+	return e.Reason.Error()
+}
 
 func main() {
 	var (
@@ -67,8 +73,8 @@ func main() {
 
 				log.Infof("Awaiting resource: %s", res)
 				if err := res.Await(ctx); err != nil {
-					if err == ErrUnavailable {
-						log.Debugf("Resource unavailable: %v", err)
+					if e, ok := err.(*unavailableError); ok { // transient error
+						log.Infof("Resource unavailable: %v", e)
 					} else {
 						log.Errorf("Error: awaiting resource: %v", err)
 					}
