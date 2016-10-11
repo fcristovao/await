@@ -20,6 +20,15 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 	dsnURL := r.URL
 	tags := parseTags(dsnURL.Fragment)
 	dsnURL.Fragment = ""
+	// Disable TLS/SSL by default
+	query, err := url.ParseQuery(dsnURL.RawQuery)
+	if err != nil {
+		return err
+	}
+	if query.Get("sslmode") == "" {
+		query.Set("sslmode", "disable")
+	}
+	dsnURL.RawQuery = query.Encode()
 	dsn := dsnURL.String()
 
 	db, err := sql.Open(r.URL.Scheme, dsn)
