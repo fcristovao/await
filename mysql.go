@@ -45,6 +45,7 @@ func (r *mysqlResource) Await(ctx context.Context) error {
 	if val, ok := tags["tables"]; ok {
 		tables := strings.Split(val, ",")
 		if err := awaitMySQLTables(db, dsnURL.Path[1:], tables); err != nil {
+			return err
 		}
 	}
 
