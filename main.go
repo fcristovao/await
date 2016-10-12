@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"net/url"
@@ -16,12 +15,19 @@ import (
 
 const retryDelay = 500 * time.Millisecond
 
-type Resource interface {
+type resource interface {
 	fmt.Stringer
 	Await(context.Context) error
 }
 
-var ErrUnavailable = errors.New("resource unavailable")
+type unavailableError struct {
+	Reason error
+}
+
+// Error implements the error interface.
+func (e *unavailableError) Error() string {
+	return e.Reason.Error()
+}
 
 func main() {
 	var (
@@ -61,20 +67,20 @@ func main() {
 				return
 			default:
 				res, err := identifyResource(ress[i])
-				if err != nil {
+				if err != nil { // Permanent error
 					log.Fatalf("Error: %v", err)
 				}
 
 				log.Infof("Awaiting resource: %s", res)
 				if err := res.Await(ctx); err != nil {
-					if err == ErrUnavailable {
-						log.Debugf("Resource unavailable: %v", err)
-					} else {
-						log.Errorf("Error: awaiting resource: %v", err)
+					if e, ok := err.(*unavailableError); ok { // transient error
+						log.Infof("Resource unavailable: %v", e)
+					} else { // Maybe transient error
+						log.Errorf("Error: failed to await resource: %v", err)
 					}
 					time.Sleep(retryDelay)
 				} else {
-					i++
+					i++ // Next resource
 				}
 			}
 		}
@@ -86,16 +92,16 @@ func main() {
 	case context.Canceled:
 		log.Infoln("All resources available")
 	case context.DeadlineExceeded:
-		log.Infoln("Error: timeout exceeded")
+		log.Infoln("Timeout exceeded")
 		if !*forceFlag {
 			os.Exit(1)
 		}
 	}
 
 	if len(cmdArgs) > 0 {
-		log.Debugf("Runnning command: %v", cmdArgs)
+		log.Infof("Runnning command: %v", cmdArgs)
 		if err := execCmd(cmdArgs); err != nil {
-			log.Fatalf("Error: %v", err)
+			log.Fatalf("Error: failed to execute command: %v", err)
 		}
 	}
 }
@@ -123,7 +129,7 @@ func parseResources(urlArgs []string) ([]url.URL, error) {
 	return urls, nil
 }
 
-func identifyResource(u url.URL) (Resource, error) {
+func identifyResource(u url.URL) (resource, error) {
 	switch u.Scheme {
 	case "http", "https":
 		return &httpResource{u}, nil

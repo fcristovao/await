@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 
@@ -27,7 +28,7 @@ func (r *httpResource) Await(ctx context.Context) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return ErrUnavailable
+		return &unavailableError{err}
 	}
 	defer resp.Body.Close()
 
@@ -37,5 +38,5 @@ func (r *httpResource) Await(ctx context.Context) error {
 		return nil
 	}
 
-	return ErrUnavailable
+	return &unavailableError{errors.New(resp.Status)}
 }

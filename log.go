@@ -6,8 +6,7 @@ import (
 )
 
 const (
-	debugLevel = iota
-	infoLevel
+	infoLevel = iota
 	errorLevel
 	silentLevel
 )
@@ -21,24 +20,6 @@ func NewLogger(level int) *LevelLogger {
 	return &LevelLogger{
 		Logger: log.New(os.Stderr, "", log.LstdFlags),
 		level:  level,
-	}
-}
-
-func (l *LevelLogger) Debug(v ...interface{}) {
-	if l.level <= debugLevel {
-		log.Print(v...)
-	}
-}
-
-func (l *LevelLogger) Debugln(v ...interface{}) {
-	if l.level <= debugLevel {
-		log.Println(v...)
-	}
-}
-
-func (l *LevelLogger) Debugf(format string, v ...interface{}) {
-	if l.level <= debugLevel {
-		log.Printf(format, v...)
 	}
 }
 
