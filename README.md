@@ -48,12 +48,12 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 
 ### HTTP Resource
 
-URL syntax: `http[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
+URL syntax: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### Websocket Resource
 
-URL syntax: `ws[s]://[<user>@]<host>[:<port>][<path>][?<query>]`
+URL syntax: `ws[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### TCP Resource
@@ -71,9 +71,17 @@ URL syntax: `file://<path>[#<fragment>]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `postgres://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+DB Parameters:
+
+- `sslmode=[verify-ca|require]`: `sslmode=verify-ca` enables TLS/SSL encrypted
+  connection to the server. Use `sslmode=require` if you want to use a
+  self-signed or invalid certificate (server side). See
+  [lib/pq](https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters)
+  for more details.
 
 Fragment:
 
@@ -85,10 +93,17 @@ Fragment:
 
 ### MySQL Resource
 
-
-URL syntax: `mysql://[<user>@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `mysql://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+DB Parameters:
+
+- `tls=[true|skip-verify]`: `tls=true` enables TLS/SSL encrypted connection to
+  the server. Use `tls=skip-verify` if you want to use a self-signed or invalid
+  certificate (server side). See
+  [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql#tls) for more
+  details.
 
 Fragment:
 

@@ -17,12 +17,26 @@ type postgresqlResource struct {
 }
 
 func (r *postgresqlResource) Await(ctx context.Context) error {
+	// Keep original resource value unmodified
 	dsnURL := r.URL
-	tags := parseTags(dsnURL.Fragment)
+
+	// Parse and remove tags from fragment
+	tags := parseTags(r.URL.Fragment)
 	dsnURL.Fragment = ""
+
+	// Disable TLS/SSL by default
+	query, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		return err
+	}
+	if query.Get("sslmode") == "" {
+		query.Set("sslmode", "disable")
+	}
+	dsnURL.RawQuery = query.Encode()
+
 	dsn := dsnURL.String()
 
-	db, err := sql.Open(r.URL.Scheme, dsn)
+	db, err := sql.Open(dnsURL.Scheme, dsn)
 	if err != nil {
 		return err
 	}
