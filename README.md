@@ -3,12 +3,12 @@
 Await availability of resources.
 
 This can be useful in the context of
-[Docker Compose](https://docs.docker.com/compose/) where service needs to wait
+[Docker Compose](https://docs.docker.com/compose/) where a service needs to wait
 for other dependent services.
 
 Optionally a timeout can be provided to specify how long to wait for all
-dependent resources to become available. On success the command returns code `0`
-on failure it returns code `1`.
+dependent resources to become available. On success the command returns code
+`0`, on failure it returns code `1`.
 
 Additionally a command can be specified which gets executed after all dependent
 resources became available.
@@ -19,7 +19,8 @@ resources became available.
 
 or
 
-    curl -o await https://github.com/betalo-sweden/await/releases/download/v0.1.0/await-linux-amd64
+    curl -s -f -L -o await https://github.com/betalo-sweden/await/releases/download/v0.2.0/await-linux-amd64
+    chmod +x await
 
 
 ## Usage
