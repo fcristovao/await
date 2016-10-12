@@ -17,13 +17,20 @@ type mysqlResource struct {
 }
 
 func (r *mysqlResource) Await(ctx context.Context) error {
+	// Keep original resource value unmodified
 	dsnURL := r.URL
+
 	// Parse and remove tags from fragment
-	tags := parseTags(dsnURL.Fragment)
+	tags := parseTags(r.URL.Fragment)
 	dsnURL.Fragment = ""
+
 	// Comply to Go's MySQL driver DSN convention
 	dsnURL.Host = "tcp(" + dsnURL.Host + ")"
-	dsn := strings.TrimPrefix(dsnURL.String(), "mysql://")
+
+	dsn := dsnURL.String()
+
+	// Comply to Go's MySQL driver DSN convention
+	dsn = strings.TrimPrefix(dsn, "mysql://")
 
 	db, err := sql.Open(dsnURL.Scheme, dsn)
 	if err != nil {
