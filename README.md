@@ -141,3 +141,8 @@ focus on Docker Compose. A few of them listed below:
 - [wait_for_db](https://gitlab.com/thelabnyc/ci/blob/09504268779acf53d65383b98b76e44ff763ef4d/examples/docker-compose-links/entrypoint.sh)
 - [wait_to_start.sh](https://gist.github.com/rochacbruno/bdcad83367593fd52005#file-wait_to_start-sh)
 - [waitforservices](https://github.com/Barzahlen/waitforservices)
+
+
+## License
+
+MIT License. See [LICENSE](LICENSE).
