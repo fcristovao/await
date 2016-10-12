@@ -47,8 +47,12 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 	}
 
 	if val, ok := tags["tables"]; ok {
-		tables := strings.Split(val, ",")
+		var tables []string
+		if val != "" {
+			tables = strings.Split(val, ",")
+		}
 		if err := awaitPostgreSQLTables(db, dsnURL.Path[1:], tables); err != nil {
+			return err
 		}
 	}
 
@@ -57,7 +61,7 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 
 func awaitPostgreSQLTables(db *sql.DB, dbName string, tables []string) error {
 	if len(tables) == 0 {
-		const stmt = `SELECT count(*) FROM information_schema.tables WHERE table_catalog=? AND table_schema='public'`
+		const stmt = `SELECT count(*) FROM information_schema.tables WHERE table_catalog=$1 AND table_schema='public'`
 		var tableCnt int
 		if err := db.QueryRow(stmt, dbName).Scan(&tableCnt); err != nil {
 			return err
@@ -70,7 +74,7 @@ func awaitPostgreSQLTables(db *sql.DB, dbName string, tables []string) error {
 		return nil
 	}
 
-	const stmt = `SELECT table_name FROM information_schema.tables WHERE table_catalog=? AND table_schema='public'`
+	const stmt = `SELECT table_name FROM information_schema.tables WHERE table_catalog=$1 AND table_schema='public'`
 	rows, err := db.Query(stmt, dbName)
 	if err != nil {
 		return err
