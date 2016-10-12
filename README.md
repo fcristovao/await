@@ -19,7 +19,8 @@ resources became available.
 
 or
 
-    curl -o await https://github.com/betalo-sweden/await/releases/download/v0.1.0/await-linux-amd64
+    curl -s -f -L -o await https://github.com/betalo-sweden/await/releases/download/v0.2.0/await-linux-amd64
+    chmod +x await
 
 
 ## Usage
