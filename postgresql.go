@@ -36,7 +36,7 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 
 	dsn := dsnURL.String()
 
-	db, err := sql.Open(dnsURL.Scheme, dsn)
+	db, err := sql.Open(dsnURL.Scheme, dsn)
 	if err != nil {
 		return err
 	}
