@@ -4,13 +4,13 @@ Await availability of resources.
 
 This can be useful in the context of
 [Docker Compose](https://docs.docker.com/compose/) where service needs to wait
-for other dependant services.
+for other dependent services.
 
 Optionally a timeout can be provided to specify how long to wait for all
-dependant resources to become available. On success the command returns code `0`
+dependent resources to become available. On success the command returns code `0`
 on failure it returns code `1`.
 
-Additionally a command can be specified which gets executed after all dependant
+Additionally a command can be specified which gets executed after all dependent
 resources became available.
 
 ## Installation
@@ -37,7 +37,7 @@ or
 
 ## Resources
 
-All dependant resources must be specified as URLs or escaped command.
+All dependent resources must be specified as URLs or escaped command.
 
 Some resources provided additional functionally encoded as fragment
 (`#<fragment>`). The syntax is as follows:
