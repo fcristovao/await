@@ -127,12 +127,33 @@ func main() {
 }
 
 func splitArgs(args []string) ([]string, []string) {
-	for i, a := range args {
-		if a == "--" {
-			return args[0:i], args[i+1:]
+	if i := indexOf(args, "--"); i >= 0 {
+		return args[0:i], args[i+1:]
+	}
+
+	// We haven't seen a resource|command separator ('--'). This can either be
+	// because of Go's flag parser removing the separator if no args were given,
+	// or because there actually was none given.
+	// Fallback to the original (unparsed) flag argument list and see if a
+	// separator was given there and if, assume all arguments given are part of
+	// the command, i.e. no resources at all were provided.
+	if i := indexOf(os.Args, "--"); i >= 0 {
+		return []string{}, args
+	}
+
+	// We still haven't seen a resource|command separator ('--'). Now finally
+	// assume because there actually was none given and use all arguments as
+	// resources.
+	return args, []string{}
+}
+
+func indexOf(l []string, s string) int {
+	for i, e := range l {
+		if e == "--" {
+			return i
 		}
 	}
-	return args, []string{}
+	return -1
 }
 
 func parseResources(urlArgs []string) ([]url.URL, error) {
