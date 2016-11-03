@@ -201,10 +201,17 @@ func execCmd(cmdArgs []string) error {
 
 func parseTags(tag string) map[string]string {
 	tags := map[string]string{}
+	if tag == "" {
+		return tags
+	}
+
 	tagParts := strings.Split(tag, "&")
 	for _, t := range tagParts {
 		kv := strings.SplitN(t, "=", 2)
 		k := kv[0]
+		if k == "" {
+			continue // Invalid format, skip for now
+		}
 		if len(kv) == 1 {
 			tags[k] = ""
 		} else {

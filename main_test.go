@@ -73,3 +73,28 @@ func TestSplitArgsNoResourceNoCommand(t *testing.T) {
 		t.Errorf("unexpected command found")
 	}
 }
+
+func TestParseTags(t *testing.T) {
+	tests := map[string]map[string]string{
+		"":              map[string]string{},
+		"=":             map[string]string{}, // invalid format, should be skipped
+		"=ignore":       map[string]string{}, // invalid format, should be skipped
+		"foo":           map[string]string{"foo": ""},
+		"foo=":          map[string]string{"foo": ""},
+		"foo=bar":       map[string]string{"foo": "bar"},
+		"foo=bar&baz":   map[string]string{"foo": "bar", "baz": ""},
+		"foo=bar&baz=1": map[string]string{"foo": "bar", "baz": "1"},
+	}
+	for given, expected := range tests {
+		actual := parseTags(given)
+		if len(actual) != len(expected) {
+			t.Errorf("unexpected parsed tags count %d != %d: %#v",
+				len(expected), len(actual), actual)
+		}
+		for actualK, actualV := range actual {
+			if expectedV, ok := expected[actualK]; !ok || actualV != expectedV {
+				t.Errorf("unexpected parsed tags k/v pair")
+			}
+		}
+	}
+}
