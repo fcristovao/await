@@ -74,6 +74,53 @@ func TestSplitArgsNoResourceNoCommand(t *testing.T) {
 	}
 }
 
+func TestParseResourcesSuccess(t *testing.T) {
+	ress := []string{
+		"http://user:pass@localhost:foo/path?query=val#fragment",
+		"https://user:pass@localhost:foo/path?query=val#fragment",
+
+		"ws://user:pass@localhost:42/path?query=val#fragment",
+		"wss://user:pass@localhost:42/path?query=val#fragment",
+
+		"tcp://localhost:42",
+		"tcp4://localhost:42",
+		"tcp6://[::1]:42",
+
+		"file://relative/path/to/file",
+		"file://relative/path/to/file#absent",
+		"file:///absolute/path/to/file",
+		"file://absolute/path/to/file#absent",
+
+		"postgres://user:pass@localhost:5432/dbname?query=val#fragment",
+
+		"mysql://user:pass@localhost:3306/dbname?query=val#fragment",
+
+		"command",
+		"command with args",
+		"relative/path/to/command",
+		"relative/path/to/command with args",
+		"/absolute/path/to/command",
+		"/absolute/path/to/command with args",
+
+		"",
+	}
+
+	actualRess, err := parseResources(ress)
+	if err != nil {
+		t.Errorf("failed to parse ressources")
+	}
+	if len(actualRess) != len(ress) {
+		t.Errorf("missing parsed ressources")
+	}
+}
+
+func TestParseResourcesFailure(t *testing.T) {
+	_, err := parseResources([]string{"//foo test"})
+	if err == nil {
+		t.Errorf("expected error parsing invalid ressource")
+	}
+}
+
 func TestParseTags(t *testing.T) {
 	tests := map[string]map[string]string{
 		"":              map[string]string{},
