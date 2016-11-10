@@ -73,9 +73,12 @@ URL syntax: `file://<path>[#<fragment>]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `postgres://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+The database name `<dbname>` is optional. If provided, the resource is
+classified as available as soon as the database was found.
 
 DB Parameters:
 
@@ -90,14 +93,17 @@ Fragment:
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
   value present, the resource's database scheme must at least contain the
-  specified tables.
+  specified tables. Using this key requires to provide a database name.
 
 
 ### MySQL Resource
 
-URL syntax: `mysql://[<user>[:<pass>]@]<host>[:<port>]/<dbname>[?<dbparams>][#<fragment>]`
+URL syntax: `mysql://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
+
+The database name `<dbname>` is optional. If provided, the resource is
+classified as available as soon as the database was found.
 
 DB Parameters:
 
@@ -112,7 +118,7 @@ Fragment:
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
   value present, the resource's database scheme must at least contain the
-  specified tables.
+  specified tables. Using this key requires to provide a database name.
 
 
 ### Command Resource
