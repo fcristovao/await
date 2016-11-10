@@ -37,18 +37,25 @@ type mysqlResource struct {
 }
 
 func (r *mysqlResource) Await(ctx context.Context) error {
-	// Keep original resource value unmodified
-	dsnURL := r.URL
-
-	// Parse and remove tags from fragment
 	tags := parseTags(r.URL.Fragment)
+
+	database := strings.TrimPrefix(r.URL.Path, "/")
+	if strings.Contains(database, "/") {
+		return fmt.Errorf("invalid database name: %s", database)
+	}
+	if database == "" {
+		if _, ok := tags["tables"]; ok {
+			return fmt.Errorf("database name required for awaiting tables")
+		}
+		// Special database default which usually exists.
+		database = "information_schema"
+	}
+
+	dsnURL := r.URL
 	dsnURL.Fragment = ""
-
-	// Comply to Go's MySQL driver DSN convention
+	dsnURL.Path = database
 	dsnURL.Host = "tcp(" + dsnURL.Host + ")"
-
 	dsn := dsnURL.String()
-
 	// Comply to Go's MySQL driver DSN convention
 	dsn = strings.TrimPrefix(dsn, "mysql://")
 
@@ -67,7 +74,7 @@ func (r *mysqlResource) Await(ctx context.Context) error {
 		if val != "" {
 			tables = strings.Split(val, ",")
 		}
-		if err := awaitMySQLTables(db, dsnURL.Path[1:], tables); err != nil {
+		if err := awaitMySQLTables(db, database, tables); err != nil {
 			return err
 		}
 	}
