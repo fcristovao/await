@@ -13,6 +13,7 @@ dependent resources to become available. On success the command returns code
 Additionally a command can be specified which gets executed after all dependent
 resources became available.
 
+
 ## Installation
 
     go get -u github.com/betalo-sweden/await
