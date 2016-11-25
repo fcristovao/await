@@ -50,19 +50,21 @@ func main() {
 	}
 	flag.Parse()
 
-	logLevel := errorLevel
+	var logLevel int
 	switch {
 	case *quietFlag:
 		logLevel = silentLevel
 	case *verboseFlag:
 		logLevel = infoLevel
+	default:
+		logLevel = errorLevel
 	}
-	log := NewLogger(logLevel)
 
+	logger := NewLogger(logLevel)
 	resArgs, cmdArgs := splitArgs(flag.Args())
 	ress, err := parseResources(resArgs)
 	if err != nil {
-		log.Fatalln("Error: failed to parse resources: %v", err)
+		logger.Fatalln("Error: failed to parse resources: %v", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), *timeoutFlag)
@@ -105,9 +107,9 @@ func main() {
 	}
 
 	if len(cmdArgs) > 0 {
-		log.Infof("Runnning command: %v", cmdArgs)
+		logger.Infof("Runnning command: %v", cmdArgs)
 		if err := execCmd(cmdArgs); err != nil {
-			log.Fatalf("Error: failed to execute command: %v", err)
+			logger.Fatalf("Error: failed to execute command: %v", err)
 		}
 	}
 }
