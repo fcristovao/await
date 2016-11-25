@@ -56,7 +56,7 @@ func (r *websocketResource) Await(ctx context.Context) error {
 
 	conn, _, err := wsDialer.Dial(r.URL.String(), nil)
 	if err != nil {
-		return &unavailableError{err}
+		return &unavailabilityError{err}
 	}
 	defer conn.Close()
 

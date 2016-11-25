@@ -48,7 +48,7 @@ func (r *commandResource) Await(ctx context.Context) error {
 
 	if err := exec.CommandContext(ctx, cmd, args...).Run(); err != nil {
 		if exitErr, ok := err.(*exec.ExitError); ok {
-			return &unavailableError{exitErr}
+			return &unavailabilityError{exitErr}
 		}
 		return err
 	}

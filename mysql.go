@@ -66,7 +66,7 @@ func (r *mysqlResource) Await(ctx context.Context) error {
 	defer db.Close()
 
 	if err := db.Ping(); err != nil {
-		return &unavailableError{err}
+		return &unavailabilityError{err}
 	}
 
 	if val, ok := tags["tables"]; ok {
@@ -91,7 +91,7 @@ func awaitMySQLTables(db *sql.DB, dbName string, tables []string) error {
 		}
 
 		if tableCnt == 0 {
-			return &unavailableError{errors.New("no tables found")}
+			return &unavailabilityError{errors.New("no tables found")}
 		}
 
 		return nil
@@ -128,7 +128,7 @@ func awaitMySQLTables(db *sql.DB, dbName string, tables []string) error {
 
 	for _, t := range tables {
 		if !contains(actualTables, t) {
-			return &unavailableError{fmt.Errorf("table not found: %s", t)}
+			return &unavailabilityError{fmt.Errorf("table not found: %s", t)}
 		}
 	}
 
