@@ -48,7 +48,7 @@ func (r *httpResource) Await(ctx context.Context) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return &unavailableError{err}
+		return &unavailabilityError{err}
 	}
 	defer resp.Body.Close()
 
@@ -58,5 +58,5 @@ func (r *httpResource) Await(ctx context.Context) error {
 		return nil
 	}
 
-	return &unavailableError{errors.New(resp.Status)}
+	return &unavailabilityError{errors.New(resp.Status)}
 }

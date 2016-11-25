@@ -35,20 +35,6 @@ import (
 
 const retryDelay = 500 * time.Millisecond
 
-type resource interface {
-	fmt.Stringer
-	Await(context.Context) error
-}
-
-type unavailableError struct {
-	Reason error
-}
-
-// Error implements the error interface.
-func (e *unavailableError) Error() string {
-	return e.Reason.Error()
-}
-
 func main() {
 	var (
 		forceFlag   = flag.Bool("f", false, "Force running the command even after giving up")

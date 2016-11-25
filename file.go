@@ -42,7 +42,7 @@ func (r *fileResource) Await(context.Context) error {
 	_, err := os.Stat(filePath)
 	if _, ok := tags["absent"]; ok {
 		if err == nil {
-			return &unavailableError{errors.New("file exists")}
+			return &unavailabilityError{errors.New("file exists")}
 		} else if os.IsNotExist(err) {
 			return nil
 		}
@@ -50,7 +50,7 @@ func (r *fileResource) Await(context.Context) error {
 		if err == nil {
 			return nil
 		} else if os.IsNotExist(err) {
-			return &unavailableError{err}
+			return &unavailabilityError{err}
 		}
 	}
 
