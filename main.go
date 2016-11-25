@@ -23,17 +23,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"net/url"
 	"os"
 	"os/exec"
-	"strings"
 	"syscall"
 	"time"
-
-	"context"
 )
-
-const retryDelay = 500 * time.Millisecond
 
 func main() {
 	var (
@@ -62,48 +56,29 @@ func main() {
 
 	logger := NewLogger(logLevel)
 	resArgs, cmdArgs := splitArgs(flag.Args())
+
 	ress, err := parseResources(resArgs)
 	if err != nil {
 		logger.Fatalln("Error: failed to parse resources: %v", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), *timeoutFlag)
-	go func() {
-		for i := 0; i < len(ress); {
-			select {
-			case <-ctx.Done(): // Exceeded timeout
-				return
-			default:
-				res, err := identifyResource(ress[i])
-				if err != nil { // Permanent error
-					log.Fatalf("Error: %v", err)
-				}
+	awaiter := &awaiter{
+		logger:  logger,
+		timeout: *timeoutFlag,
+	}
 
-				log.Infof("Awaiting resource: %s", res)
-				if err := res.Await(ctx); err != nil {
-					if e, ok := err.(*unavailableError); ok { // transient error
-						log.Infof("Resource unavailable: %v", e)
-					} else { // Maybe transient error
-						log.Errorf("Error: failed to await resource: %v", err)
-					}
-					time.Sleep(retryDelay)
-				} else {
-					i++ // Next resource
-				}
-			}
+	if err := awaiter.run(ress); err != nil {
+		if e, ok := err.(*unavailabilityError); ok {
+			logger.Infof("Resource unavailable: %v", e)
+			logger.Infoln("Timeout exceeded")
+		} else {
+			logger.Fatalln("Error: %v", err)
 		}
-
-		cancel() // All resources are available
-	}()
-
-	switch <-ctx.Done(); ctx.Err() {
-	case context.Canceled:
-		log.Infoln("All resources available")
-	case context.DeadlineExceeded:
-		log.Infoln("Timeout exceeded")
 		if !*forceFlag {
 			os.Exit(1)
 		}
+	} else {
+		logger.Infoln("All resources available")
 	}
 
 	if len(cmdArgs) > 0 {
@@ -144,67 +119,10 @@ func indexOf(l []string, s string) int {
 	return -1
 }
 
-func parseResources(urlArgs []string) ([]url.URL, error) {
-	var urls []url.URL
-	for _, urlArg := range urlArgs {
-		// Leveraging the fact the Go's URL parser matches e.g. `curl -s
-		// http://example.com` as url.Path instead of throwing an error.
-		u, err := url.Parse(urlArg)
-		if err != nil {
-			return urls, err
-		}
-		urls = append(urls, *u)
-	}
-	return urls, nil
-}
-
-func identifyResource(u url.URL) (resource, error) {
-	switch u.Scheme {
-	case "http", "https":
-		return &httpResource{u}, nil
-	case "ws", "wss":
-		return &websocketResource{u}, nil
-	case "tcp", "tcp4", "tcp6":
-		return &tcpResource{u}, nil
-	case "file":
-		return &fileResource{u}, nil
-	case "postgres":
-		return &postgresqlResource{u}, nil
-	case "mysql":
-		return &mysqlResource{u}, nil
-	case "":
-		return &commandResource{u}, nil
-	default:
-		return nil, fmt.Errorf("unsupported resource scheme: %v", u.Scheme)
-	}
-}
-
 func execCmd(cmdArgs []string) error {
 	path, err := exec.LookPath(cmdArgs[0])
 	if err != nil {
 		return err
 	}
 	return syscall.Exec(path, cmdArgs, os.Environ())
-}
-
-func parseTags(tag string) map[string]string {
-	tags := map[string]string{}
-	if tag == "" {
-		return tags
-	}
-
-	tagParts := strings.Split(tag, "&")
-	for _, t := range tagParts {
-		kv := strings.SplitN(t, "=", 2)
-		k := kv[0]
-		if k == "" {
-			continue // Invalid format, skip for now
-		}
-		if len(kv) == 1 {
-			tags[k] = ""
-		} else {
-			tags[k] = kv[1]
-		}
-	}
-	return tags
 }
