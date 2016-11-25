@@ -72,8 +72,8 @@ func main() {
 
 	if err := awaiter.run(ress); err != nil {
 		if e, ok := err.(*unavailabilityError); ok {
-			logger.Infof("Resource unavailable: %v", e)
-			logger.Infoln("Timeout exceeded")
+			logger.Errorf("Resource unavailable: %v", e)
+			logger.Errorln("Timeout exceeded")
 		} else {
 			logger.Fatalln("Error: %v", err)
 		}
