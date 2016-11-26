@@ -52,6 +52,8 @@ func (a *awaiter) run(resources []resource) error {
 
 	go func() {
 		for _, res := range resources {
+			a.logger.Infof("Awaiting resource: %s", res)
+
 			for {
 				select {
 				case <-ctx.Done():
@@ -61,11 +63,10 @@ func (a *awaiter) run(resources []resource) error {
 					// Still time left, let's continue
 				}
 
-				a.logger.Infof("Awaiting resource: %s", res)
 				if latestErr = res.Await(ctx); latestErr != nil {
 					if e, ok := latestErr.(*unavailabilityError); ok {
 						// transient error
-						a.logger.Infof("Resource unavailable: %v", e)
+						a.logger.Debugf("Resource unavailable: %v", e)
 					} else {
 						// Maybe transient error
 						a.logger.Errorf("Error: failed to await resource: %v", latestErr)
