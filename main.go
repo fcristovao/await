@@ -31,11 +31,10 @@ import (
 
 func main() {
 	var (
-		forceFlag    = flag.Bool("f", false, "Force running the command even after giving up")
-		timeoutFlag  = flag.Duration("t", 1*time.Minute, "Timeout duration before giving up")
-		verbose1Flag = flag.Bool("v", false, "Set verbose output mode")
-		verbose2Flag = flag.Bool("vv", false, "Set more verbose output mode")
-		quietFlag    = flag.Bool("q", false, "Set quiet mode")
+		forceFlag   = flag.Bool("f", false, "Force running the command even after giving up")
+		timeoutFlag = flag.Duration("t", 1*time.Minute, "Timeout duration before giving up")
+		verboseFlag = flag.Bool("v", false, "Set verbose output")
+		quietFlag   = flag.Bool("q", false, "Set quiet mode")
 	)
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "Usage: await [options...] <res>... [ -- <cmd>]")
@@ -49,10 +48,8 @@ func main() {
 	switch {
 	case *quietFlag:
 		logLevel = silentLevel
-	case *verbose1Flag:
+	case *verboseFlag:
 		logLevel = infoLevel
-	case *verbose2Flag:
-		logLevel = debugLevel
 	default:
 		logLevel = errorLevel
 	}
@@ -72,8 +69,8 @@ func main() {
 
 	if err := awaiter.run(ress); err != nil {
 		if e, ok := err.(*unavailabilityError); ok {
-			logger.Errorf("Resource unavailable: %v", e)
-			logger.Errorln("Timeout exceeded")
+			logger.Infof("Resource unavailable: %v", e)
+			logger.Infoln("Timeout exceeded")
 		} else {
 			logger.Fatalln("Error: %v", err)
 		}
