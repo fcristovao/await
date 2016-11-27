@@ -33,7 +33,7 @@ func main() {
 	var (
 		forceFlag    = flag.Bool("f", false, "Force running the command even after giving up")
 		quietFlag    = flag.Bool("q", false, "Set quiet mode")
-		timeoutFlag  = flag.Duration("t", 1*time.Minute, "Timeout duration before giving up")
+		timeoutFlag  = flag.Duration("t", 1*time.Minute, "Set timeout duration before giving up")
 		verbose1Flag = flag.Bool("v", false, "Set verbose output mode")
 		verbose2Flag = flag.Bool("vv", false, "Set more verbose output mode")
 	)
