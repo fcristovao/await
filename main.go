@@ -56,10 +56,9 @@ func main() {
 	default:
 		logLevel = errorLevel
 	}
-
 	logger := NewLogger(logLevel)
-	resArgs, cmdArgs := splitArgs(flag.Args())
 
+	resArgs, cmdArgs := splitArgs(flag.Args())
 	ress, err := parseResources(resArgs)
 	if err != nil {
 		logger.Fatalln("Error: failed to parse resources: %v", err)
