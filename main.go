@@ -61,7 +61,7 @@ func main() {
 	resArgs, cmdArgs := splitArgs(flag.Args())
 	ress, err := parseResources(resArgs)
 	if err != nil {
-		logger.Fatalln("Error: failed to parse resources: %v", err)
+		logger.Fatalf("Error: failed to parse resources: %v", err)
 	}
 
 	awaiter := &awaiter{
@@ -74,7 +74,7 @@ func main() {
 			logger.Errorf("Resource unavailable: %v", e)
 			logger.Errorln("Timeout exceeded")
 		} else {
-			logger.Fatalln("Error: %v", err)
+			logger.Fatalf("Error: %v", err)
 		}
 		if !*forceFlag {
 			os.Exit(1)
