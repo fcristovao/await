@@ -33,8 +33,10 @@ or
       -f	Force running the command even after giving up
       -q	Set quiet mode
       -t duration
-        	Timeout duration before giving up (default 1m0s)
-      -v	Set verbose output
+        	Set timeout duration before giving up (default 1m0s)
+      -v	Set verbose output mode
+      -vv
+        	Set more verbose output mode
 
 
 ## Resources
