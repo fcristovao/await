@@ -107,8 +107,7 @@ func splitArgs(args []string) ([]string, []string) {
 	}
 
 	// We still haven't seen a resource|command separator ('--'). Now finally
-	// assume because there actually was none given and use all arguments as
-	// resources.
+	// assume none was given and use all arguments as resources.
 	return args, []string{}
 }
 
