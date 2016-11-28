@@ -31,6 +31,8 @@ or
     Await availability of resources.
 
       -f	Force running the command even after giving up
+      -i string
+        	Read resources from file, '-' to read from stdin
       -q	Set quiet mode
       -t duration
         	Set timeout duration before giving up (default 1m0s)
