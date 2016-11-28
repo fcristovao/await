@@ -21,10 +21,12 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -32,6 +34,7 @@ import (
 func main() {
 	var (
 		forceFlag    = flag.Bool("f", false, "Force running the command even after giving up")
+		infileFlag   = flag.String("i", "", "Read resources from file, '-' to read from stdin")
 		quietFlag    = flag.Bool("q", false, "Set quiet mode")
 		timeoutFlag  = flag.Duration("t", 1*time.Minute, "Set timeout duration before giving up")
 		verbose1Flag = flag.Bool("v", false, "Set verbose output mode")
@@ -59,6 +62,13 @@ func main() {
 	logger := NewLogger(logLevel)
 
 	resArgs, cmdArgs := splitArgs(flag.Args())
+	if *infileFlag != "" {
+		resFile, err := readFromFile(*infileFlag)
+		if err != nil {
+			logger.Fatalf("Error: failed to read resources file: %v", err)
+		}
+		resArgs = append(resArgs, resFile...)
+	}
 	ress, err := parseResources(resArgs)
 	if err != nil {
 		logger.Fatalf("Error: failed to parse resources: %v", err)
@@ -118,6 +128,31 @@ func indexOf(l []string, s string) int {
 		}
 	}
 	return -1
+}
+
+func stdinFromPipe() bool {
+	stat, _ := os.Stdin.Stat()
+	return (stat.Mode() & os.ModeNamedPipe) != 0
+}
+
+func readFromFile(filepath string) ([]string, error) {
+	f := os.Stdin
+	if filepath != "-" {
+		var err error
+		if f, err = os.Open(filepath); err != nil {
+			return nil, err
+		}
+		defer f.Close()
+	}
+
+	var lines []string
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		if line := strings.TrimSpace(scanner.Text()); line != "" {
+			lines = append(lines, line)
+		}
+	}
+	return lines, scanner.Err()
 }
 
 func execCmd(cmdArgs []string) error {
