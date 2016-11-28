@@ -50,12 +50,12 @@ func main() {
 
 	var logLevel int
 	switch {
-	case *quietFlag:
-		logLevel = silentLevel
-	case *verbose1Flag:
-		logLevel = infoLevel
 	case *verbose2Flag:
 		logLevel = debugLevel
+	case *verbose1Flag:
+		logLevel = infoLevel
+	case *quietFlag:
+		logLevel = silentLevel
 	default:
 		logLevel = errorLevel
 	}
