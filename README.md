@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/betalo-sweden/await.svg?branch=master)](https://travis-ci.org/betalo-sweden/await)
+
 # await
 
 Await availability of resources.

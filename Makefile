@@ -3,6 +3,10 @@ all: build
 build:
 	go build -v github.com/betalo-sweden/await
 
+deps:
+	go get -u github.com/kardianos/govendor
+	govendor sync
+
 test:
 	go test -v
 
