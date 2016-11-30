@@ -47,6 +47,7 @@ func (r *httpResource) Await(ctx context.Context) error {
 	// IDEA(uwe): Use k/v pairs in fragment to set headers
 
 	req = req.WithContext(ctx)
+	req.Close = true
 
 	resp, err := client.Do(req)
 	if err != nil {
