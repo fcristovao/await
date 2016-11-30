@@ -22,6 +22,8 @@ package main
 
 import (
 	"errors"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
@@ -56,6 +58,10 @@ func (r *httpResource) Await(ctx context.Context) error {
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return &unavailabilityError{errors.New(resp.Status)}
+	}
+
+	if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
+		return &unavailabilityError{err}
 	}
 
 	return nil
