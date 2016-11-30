@@ -54,9 +54,9 @@ func (r *httpResource) Await(ctx context.Context) error {
 
 	// IDEA(uwe): Use fragment to set tolerated status code
 
-	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
-		return nil
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return &unavailabilityError{errors.New(resp.Status)}
 	}
 
-	return &unavailabilityError{errors.New(resp.Status)}
+	return nil
 }
