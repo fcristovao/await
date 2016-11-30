@@ -35,7 +35,11 @@ type httpResource struct {
 }
 
 func (r *httpResource) Await(ctx context.Context) error {
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+		},
+	}
 
 	// IDEA(uwe): Use fragment to set method
 
