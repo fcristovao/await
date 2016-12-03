@@ -53,7 +53,8 @@ Some resources provided additional functionally encoded as fragment
 `k1|k1=|k1=v1,v2,v3...[&k2=v1&...]`.
 E.g.: http://example.com/#ssl&foo=bar,baz&i=j
 
-Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
+Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Docker,
+Command.
 
 
 ### HTTP Resource
@@ -148,6 +149,30 @@ classified as available as soon as the database was found.
   resource's database scheme must at least contain one table. If key present and
   value present, the resource's database scheme must at least contain the
   specified tables. Using this key requires to provide a database name.
+
+
+### Docker Container Resource
+
+**Availability**: Available when a given Docker container is running, not paused
+and not restarting, and has a health check status set to `healthy`. Unavailable
+otherwise.
+
+**URL syntax**: `docker://[<host>[:<port>]][/<container_id>][#<fragment>]`
+
+The `<host>` (and optional `<port>`) specifies the Docker daemon host. It can be
+either a unix socket file path, TCP URL host, or absent. If absent, the
+`DOCKER_HOST` environment variable's value will be used other
+`unix:///var/run/docker.sock`.
+
+The `<container_id>` can be optional but then requires the `name` or `image`
+key-value pair in the `<fragment>`.
+
+**Fragment**:
+
+- `[name=<name>]` key-value: Lookup container ID by container name.
+
+- `[image=<image>]` key-value: Lookup container ID by image tag (repository and
+  version).
 
 
 ### Command Resource

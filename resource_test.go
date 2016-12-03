@@ -50,6 +50,12 @@ func TestParseResourcesSuccess(t *testing.T) {
 		"/absolute/path/to/command",
 		"/absolute/path/to/command with args",
 
+		"docker:///id",
+		"docker:///id?name=bar&image=foo",
+		"docker://localhost:2375/id",
+		"docker://0.0.0.0:2375/id",
+		"docker:///var/run/docker.sock/id",
+
 		"",
 	}
 
