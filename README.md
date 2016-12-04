@@ -32,6 +32,7 @@ or
     Usage: await [options...] <res>... [ -- <cmd>]
     Await availability of resources.
 
+      -V	Show version
       -f	Force running the command even after giving up
       -i string
         	Read resources from file, '-' to read from stdin
