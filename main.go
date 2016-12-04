@@ -123,7 +123,7 @@ func splitArgs(args []string) ([]string, []string) {
 
 func indexOf(l []string, s string) int {
 	for i, e := range l {
-		if e == "--" {
+		if e == s {
 			return i
 		}
 	}
