@@ -31,6 +31,8 @@ import (
 	"time"
 )
 
+const version = "0.4.0"
+
 func main() {
 	var (
 		forceFlag    = flag.Bool("f", false, "Force running the command even after giving up")
@@ -39,6 +41,7 @@ func main() {
 		timeoutFlag  = flag.Duration("t", 1*time.Minute, "Set timeout duration before giving up")
 		verbose1Flag = flag.Bool("v", false, "Set verbose output mode")
 		verbose2Flag = flag.Bool("vv", false, "Set more verbose output mode")
+		versionFlag  = flag.Bool("V", false, "Show version")
 	)
 	flag.Usage = func() {
 		fmt.Fprintln(os.Stderr, "Usage: await [options...] <res>... [ -- <cmd>]")
@@ -47,6 +50,11 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	if *versionFlag {
+		fmt.Println("await", version)
+		return
+	}
 
 	var logLevel int
 	switch {
