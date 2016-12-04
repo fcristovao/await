@@ -37,14 +37,14 @@ type mysqlResource struct {
 }
 
 func (r *mysqlResource) Await(ctx context.Context) error {
-	tags := parseTags(r.URL.Fragment)
+	opts := parseFragment(r.URL.Fragment)
 
 	database := strings.TrimPrefix(r.URL.Path, "/")
 	if strings.Contains(database, "/") {
 		return fmt.Errorf("invalid database name: %s", database)
 	}
 	if database == "" {
-		if _, ok := tags["tables"]; ok {
+		if _, ok := opts["tables"]; ok {
 			return fmt.Errorf("database name required for awaiting tables")
 		}
 		// Special database default which usually exists.
@@ -69,10 +69,10 @@ func (r *mysqlResource) Await(ctx context.Context) error {
 		return &unavailabilityError{err}
 	}
 
-	if val, ok := tags["tables"]; ok {
+	if val, ok := opts["tables"]; ok {
 		var tables []string
-		if val != "" {
-			tables = strings.Split(val, ",")
+		if len(val) > 0 && val[0] != "" {
+			tables = strings.Split(val[0], ",")
 		}
 		if err := awaitMySQLTables(db, database, tables); err != nil {
 			return err

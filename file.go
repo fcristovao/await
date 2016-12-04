@@ -37,10 +37,10 @@ func (r *fileResource) Await(context.Context) error {
 	// Unify absolute and relative file paths
 	filePath := filepath.Join(r.URL.Host, r.URL.Path)
 
-	tags := parseTags(r.URL.Fragment)
+	opts := parseFragment(r.URL.Fragment)
 
 	_, err := os.Stat(filePath)
-	if _, ok := tags["absent"]; ok {
+	if _, ok := opts["absent"]; ok {
 		if err == nil {
 			return &unavailabilityError{errors.New("file exists")}
 		} else if os.IsNotExist(err) {

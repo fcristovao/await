@@ -69,7 +69,7 @@ func TestParseResourcesFailure(t *testing.T) {
 	}
 }
 
-func TestParseTags(t *testing.T) {
+func TestParseFragment(t *testing.T) {
 	tests := map[string]map[string]string{
 		"":              map[string]string{},
 		"=":             map[string]string{}, // invalid format, should be skipped
@@ -81,14 +81,14 @@ func TestParseTags(t *testing.T) {
 		"foo=bar&baz=1": map[string]string{"foo": "bar", "baz": "1"},
 	}
 	for given, expected := range tests {
-		actual := parseTags(given)
+		actual := parseFragment(given)
 		if len(actual) != len(expected) {
-			t.Errorf("unexpected parsed tags count %d != %d: %#v",
+			t.Errorf("unexpected parsed fragment count %d != %d: %#v",
 				len(expected), len(actual), actual)
 		}
 		for actualK, actualV := range actual {
-			if expectedV, ok := expected[actualK]; !ok || actualV != expectedV {
-				t.Errorf("unexpected parsed tags k/v pair")
+			if expectedV, ok := expected[actualK]; !ok || actualV[0] != expectedV {
+				t.Errorf("unexpected parsed fragment k/v pair")
 			}
 		}
 	}

@@ -48,8 +48,8 @@ or
 All dependent resources must be specified as URLs or escaped command.
 
 Some resources provided additional functionally encoded as fragment
-(`#<fragment>`). The syntax is as follows:
-`k1|k1=v1,v2,v3...[&k2=v1&...]` (no quoting supported).
+(`#<fragment>`). The syntax follows the URL query syntax:
+`k1|k1=|k1=v1,v2,v3...[&k2=v1&...]`.
 E.g.: http://example.com/#ssl&foo=bar,baz&i=j
 
 Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
