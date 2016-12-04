@@ -57,22 +57,35 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 
 ### HTTP Resource
 
-URL syntax: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
+**Availability**: Available when a connection to a given server is established
+and an empty request returns the response status code is 2xx. Unavailable
+otherwise.
+
+**URL syntax**: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### Websocket Resource
 
-URL syntax: `ws[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
+**Availability**: Available when a connection to a given server is established.
+Unavailable otherwise.
+
+**URL syntax**: `ws[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
 
 
 ### TCP Resource
 
-URL syntax: `tcp[4|6]://<host>[:<port>]`
+**Availability**: Available when a connection to a given server is established.
+Unavailable otherwise.
+
+**URL syntax**: `tcp[4|6]://<host>[:<port>]`
 
 
 ### File Resource
 
-URL syntax: `file://<path>[#<fragment>]`
+**Availability**: Available when given path is a file and the file exists or, if
+declared absent, the file does not exist. Unavailable otherwise.
+
+**URL syntax**: `file://<path>[#<fragment>]`
 
 - `absent` key: If present, the resource is defined as available, when the
   specific file is absent, rather than existing.
@@ -80,14 +93,18 @@ URL syntax: `file://<path>[#<fragment>]`
 
 ### PostgreSQL Resource
 
-URL syntax: `postgres://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
+**Availability**: Available when a connection to a given PostgreSQL database
+server is established and optional a given database could be found and optional
+any tables or a set of tables could be found. Unavailable otherwise.
+
+**URL syntax**: `postgres://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
 The database name `<dbname>` is optional. If provided, the resource is
 classified as available as soon as the database was found.
 
-DB Parameters:
+**DB Parameters**:
 
 - `sslmode=[verify-ca|require]`: `sslmode=verify-ca` enables TLS/SSL encrypted
   connection to the server. Use `sslmode=require` if you want to use a
@@ -95,7 +112,7 @@ DB Parameters:
   [lib/pq](https://godoc.org/github.com/lib/pq#hdr-Connection_String_Parameters)
   for more details.
 
-Fragment:
+**Fragment**:
 
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
@@ -105,14 +122,18 @@ Fragment:
 
 ### MySQL Resource
 
-URL syntax: `mysql://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
+**Availability**: Available when a connection to a given MySQL database server
+is established and optional a given database could be found and optional any
+tables or a set of tables could be found. Unavailable otherwise.
+
+**URL syntax**: `mysql://[<user>[:<pass>]@]<host>[:<port>][/<dbname>][?<dbparams>][#<fragment>]`
 
 The URL defines a [DSN](https://en.wikipedia.org/wiki/Data_source_name).
 
 The database name `<dbname>` is optional. If provided, the resource is
 classified as available as soon as the database was found.
 
-DB Parameters:
+**DB Parameters**:
 
 - `tls=[true|skip-verify]`: `tls=true` enables TLS/SSL encrypted connection to
   the server. Use `tls=skip-verify` if you want to use a self-signed or invalid
@@ -120,7 +141,7 @@ DB Parameters:
   [go-sql-driver/mysql](https://github.com/go-sql-driver/mysql#tls) for more
   details.
 
-Fragment:
+**Fragment**:
 
 - `tables[=t1,t2,...]` key-value: If key present and value absent, the
   resource's database scheme must at least contain one table. If key present and
@@ -130,10 +151,13 @@ Fragment:
 
 ### Command Resource
 
-Does not follow the URL syntax and is used a generic fallback for invalid URLs
-(i.e. absent scheme).
+Does not follow the URL syntax and is used as generic fallback for invalid URLs
+(i.e. schema is absent).
 
-URL syntax: `<path> [<arg>...]`
+**Availability**: Available when command return status code `0`. Unavailable
+otherwise.
+
+**URL syntax**: `<path> [<arg>...]`
 
 
 ## Alternatives
