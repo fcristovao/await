@@ -4,9 +4,9 @@
 
 Await availability of resources.
 
-This can be useful in the context of
-[Docker Compose](https://docs.docker.com/compose/) where a service needs to wait
-for other dependent services.
+This can be useful in the context of [Docker Compose](https://docs.docker.com/compose/)
+where a service, just as an integration test driver, needs to wait for other
+dependent services.
 
 Optionally a timeout can be provided to specify how long to wait for all
 dependent resources to become available. On success the command returns code
@@ -14,6 +14,13 @@ dependent resources to become available. On success the command returns code
 
 Additionally a command can be specified which gets executed after all dependent
 resources became available.
+
+`await` can be used outside of Docker-Compose, for example from a _Makefile_ to
+wait until all Docker-Compose or Kubernetes containers are started (either via
+exposed ports or Docker's HEALTHCHECK status). It can also be used from within
+Docker-Compose by overriding a service's `ENTRYPOINT` or `CMD` which allows for
+introspection as all environment variables of a service, such as credentials,
+can be used to define the resource.
 
 
 ## Installation
@@ -42,6 +49,63 @@ or
       -v	Set verbose output mode
       -vv
         	Set more verbose output mode
+
+
+## Examples
+
+Inside Docker-Compose:
+
+```yaml
+services:
+  it-tests:
+    build: ./test/integration
+    environment:
+      - MYSERVICE_BASE_URL=http://myservice:5001
+      - MYSERVICE_BASIC_AUTH_USER=user
+      - MYSERVICE_BASIC_AUTH_PASS=pass
+    command: ['await', '-v',
+              'http://github-mock:8080',
+              'http://sendgrid-mock:5004',
+              'mysql://user:pass@myservice-db:3306/myservice-db#tables',
+              'http://user:pass@myservice:5002',
+              'postgres://user:pass@my-other-dep-db:5432/myservice-dep-db',
+              'http://user:pass@myservice-dep:5001',
+              '--', 'go', 'test', '-race', '-v']
+    :
+```
+
+Outside Docker-Compose:
+
+
+```makefile
+test-it:
+	docker-compose up -d
+	await -v \
+	    http://github-mock:8080 \
+	    http://sendgrid-mock:5004 \
+	    mysql://user:pass@myservice-db:3306/myservice-db#tables \
+	    http://user:pass@myservice:5002 \
+	    postgres://user:pass@myservice-dep-db:5432/myservice-dep-db \
+	    http://user:pass@myservice-dep:5001 \
+	    -- go test -race -v'
+    :
+```
+
+Outside Docker-Compose using `HEALTHCHECK`:
+
+```makefile
+test-it:
+	docker-compose up -d
+	await -v \
+	    docker://?name=project_github_mock_1 \
+	docker://?name=project_sendgrid_1 \
+	    docker://?name=project_myservice_db_1 \
+	    docker://?name=project_myservice_1 \
+	    docker://?name=project_myservice_dep_1 \
+	    docker://?name=project_myservice_dep_db_1 \
+	    -- go test -race -v'
+	:
+```
 
 
 ## Resources
@@ -161,11 +225,11 @@ otherwise.
 
 The `<host>` (and optional `<port>`) specifies the Docker daemon host. It can be
 either a unix socket file path, TCP URL host, or absent. If absent, the
-`DOCKER_HOST` environment variable's value will be used other
+`DOCKER_HOST` environment variable's value will be used, otherwise
 `unix:///var/run/docker.sock`.
 
-The `<container_id>` can be optional but then requires the `name` or `image`
-key-value pair in the `<fragment>`.
+Either `<container_id>` or `<fragment>` with `name` or `image` key-value pair in
+the `<fragment>` are mandatory to identify the container.
 
 **Fragment**:
 
