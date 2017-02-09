@@ -102,7 +102,7 @@ func main() {
 	}
 
 	if len(cmdArgs) > 0 {
-		logger.Infof("Runnning command: %v", cmdArgs)
+		logger.Infof("Running command: %v", cmdArgs)
 		if err := execCmd(cmdArgs); err != nil {
 			logger.Fatalf("Error: failed to execute command: %v", err)
 		}
