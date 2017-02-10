@@ -53,6 +53,8 @@ func (r *httpResource) Await(ctx context.Context) error {
 	req = req.WithContext(ctx)
 	req.Close = true
 
+	req.Header.Set("User-Agent", "await/"+version)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return &unavailabilityError{err}

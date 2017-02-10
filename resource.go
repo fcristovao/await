@@ -23,7 +23,6 @@ import (
 	"context"
 	"fmt"
 	"net/url"
-	"strings"
 )
 
 type resource interface {
@@ -79,24 +78,11 @@ func identifyResource(u url.URL) (resource, error) {
 	}
 }
 
-func parseTags(tag string) map[string]string {
-	tags := map[string]string{}
-	if tag == "" {
-		return tags
-	}
+func parseFragment(fragment string) url.Values {
+	// Skip encountered decoding errors on invalid format for now
+	v, _ := url.ParseQuery(fragment)
+	// Maintain backwards-compatibility for the case that key is empty
+	delete(v, "")
 
-	tagParts := strings.Split(tag, "&")
-	for _, t := range tagParts {
-		kv := strings.SplitN(t, "=", 2)
-		k := kv[0]
-		if k == "" {
-			continue // Invalid format, skip for now
-		}
-		if len(kv) == 1 {
-			tags[k] = ""
-		} else {
-			tags[k] = kv[1]
-		}
-	}
-	return tags
+	return v
 }
