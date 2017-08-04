@@ -1,6 +1,12 @@
 language: go
+
+notifications:
+  email: false
+
 go:
     - 1.7
     - master
+
 install: make deps
+
 script: make test
