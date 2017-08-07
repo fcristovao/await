@@ -21,12 +21,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"os/exec"
 	"strings"
-
-	"context"
 )
 
 type commandResource struct {

@@ -21,12 +21,11 @@
 package main
 
 import (
+	"context"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
-
-	"context"
 
 	"github.com/gorilla/websocket"
 )

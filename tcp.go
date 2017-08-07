@@ -21,10 +21,9 @@
 package main
 
 import (
+	"context"
 	"net"
 	"net/url"
-
-	"context"
 )
 
 type tcpResource struct {

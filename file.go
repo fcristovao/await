@@ -21,12 +21,11 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/url"
 	"os"
 	"path/filepath"
-
-	"context"
 )
 
 type fileResource struct {

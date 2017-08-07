@@ -21,13 +21,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"net/url"
 	"strings"
-
-	"context"
 
 	_ "github.com/lib/pq" // Register Postgres driver
 )

@@ -21,11 +21,10 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/url"
-
-	"context"
 )
 
 type httpResource struct {
