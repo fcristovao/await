@@ -5,6 +5,8 @@ notifications:
 
 go:
     - 1.7
+    - 1.8
+    - 1.9
     - master
 
 install: make deps
