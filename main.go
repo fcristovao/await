@@ -150,7 +150,7 @@ func readFromFile(filepath string) ([]string, error) {
 		if f, err = os.Open(filepath); err != nil {
 			return nil, err
 		}
-		defer f.Close()
+		defer func() { _ = f.Close() }()
 	}
 
 	var lines []string

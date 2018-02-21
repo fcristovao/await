@@ -57,7 +57,7 @@ func (r *websocketResource) Await(ctx context.Context) error {
 	if err != nil {
 		return &unavailabilityError{err}
 	}
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 
 	return nil
 }

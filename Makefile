@@ -19,6 +19,28 @@ deps:
 	go get -u github.com/golang/dep
 	dep ensure
 
+.PHONY: lint
+lint:
+	@if [ $$(gofmt -l . | wc -l) != 0 ]; then \
+	    echo "gofmt: code not formatted"; \
+	    gofmt -l . | grep -v vendor/; \
+	    exit 1; \
+	fi
+
+	@gometalinter \
+	             --vendor \
+	             --tests \
+	             --disable=gocyclo \
+	             --disable=dupl \
+	             --disable=deadcode \
+	             --disable=gotype \
+	             --disable=maligned \
+	             --disable=interfacer \
+	             --disable=varcheck \
+	             --disable=gas \
+	             --disable=megacheck \
+	             ./...
+
 .PHONY: test
 test:
 	go test -v

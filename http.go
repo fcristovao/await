@@ -51,7 +51,7 @@ func (r *httpResource) Await(ctx context.Context) error {
 	if err != nil {
 		return &unavailabilityError{err}
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	// IDEA(uwe): Use fragment to set tolerated status code
 

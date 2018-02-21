@@ -69,7 +69,7 @@ func (r *postgresqlResource) Await(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
 	if err := db.Ping(); err != nil {
 		return &unavailabilityError{err}
@@ -108,7 +108,7 @@ func awaitPostgreSQLTables(db *sql.DB, dbName string, tables []string) error {
 	if err != nil {
 		return err
 	}
-	defer rows.Close()
+	defer func() { _ = rows.Close() }()
 
 	var actualTables []string
 	for rows.Next() {
