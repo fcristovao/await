@@ -4,8 +4,8 @@ build:
 	go build -v github.com/betalo-sweden/await
 
 deps:
-	go get -u github.com/kardianos/govendor
-	govendor sync
+	go get -u github.com/golang/dep
+	dep ensure
 
 test:
 	go test -v
