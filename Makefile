@@ -37,7 +37,7 @@ lint:
 	             --disable=maligned \
 	             --disable=interfacer \
 	             --disable=varcheck \
-	             --disable=gas \
+	             --disable=gosec \
 	             --disable=megacheck \
 	             ./...
 
