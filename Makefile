@@ -16,7 +16,7 @@ copyright:
 
 .PHONY: deps
 deps:
-	go get -u github.com/golang/dep
+	curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 	dep ensure
 
 .PHONY: lint
