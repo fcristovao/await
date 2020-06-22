@@ -24,8 +24,8 @@ import "testing"
 
 func TestParseResourcesSuccess(t *testing.T) {
 	ress := []string{
-		"http://user:pass@localhost:foo/path?query=val#fragment",
-		"https://user:pass@localhost:foo/path?query=val#fragment",
+		"http://user:pass@localhost:1234/path?query=val#fragment",
+		"https://user:pass@localhost:1234/path?query=val#fragment",
 
 		"ws://user:pass@localhost:42/path?query=val#fragment",
 		"wss://user:pass@localhost:42/path?query=val#fragment",
@@ -55,7 +55,7 @@ func TestParseResourcesSuccess(t *testing.T) {
 
 	actualRess, err := parseResources(ress)
 	if err != nil {
-		t.Errorf("failed to parse ressources")
+		t.Errorf("failed to parse ressources: %#v", err.Error())
 	}
 	if len(actualRess) != len(ress) {
 		t.Errorf("missing parsed ressources")
