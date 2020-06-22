@@ -73,6 +73,7 @@ func (a *awaiter) run(resources []resource) error {
 					}
 					time.Sleep(retryDelay)
 				} else {
+					a.logger.Infof("Resource found: %s", res)
 					// Resource found, move on to next one
 					break
 				}
