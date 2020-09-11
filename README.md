@@ -62,8 +62,11 @@ Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
 and an empty request returns the response status code is 2xx. Unavailable
 otherwise.
 
-**URL syntax**: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>]`
+**URL syntax**: `http[s]://[<user>[:<pass>]@]<host>[:<port>][<path>][?<query>][#<fragment>]`
 
+**Fragment**:
+
+- `tls=skip-verify`: When used, it skips TLS check for `https` resources.
 
 ### Websocket Resource
 
