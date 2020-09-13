@@ -48,6 +48,12 @@ func TestParseResourcesSuccess(t *testing.T) {
 		"kafka://localhost:9092#topics",
 		"kafka://localhost:9092#topics=t1,t2",
 
+		"kafkas://localhost",
+		"kafkas://localhost:9093",
+		"kafkas://localhost:9093#topics",
+		"kafkas://localhost:9093#topics=t1,t2",
+		"kafkas://localhost:9093#tls=skip-verify&topics=t1,t2",
+
 		"command",
 		"command with args",
 		"relative/path/to/command",

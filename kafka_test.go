@@ -20,6 +20,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"math/rand"
 	"testing"
@@ -119,6 +120,91 @@ func TestKafkaResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 }
 
+func TestKafkaTLSResource_Await(t *testing.T) {
+	ensureKafkaTLSAvailable(t)
+
+	// Notice the `kafka` instead of `kafkas`:
+	if err := resourceAwait(t, "kafka://localhost:9093"); err == nil {
+		t.Errorf("Should have failed to Kafka via TLS when not using `kafkas` scheme, but didn't.")
+	}
+
+	if err := resourceAwait(t, "kafkas://localhost:9093#tls=skip-verify"); err != nil {
+		t.Errorf("Should have connected to Kafka via TLS and ignore certificate verification, but failed to: %v.", err)
+	}
+}
+
+func TestKafkaTLSResource_AwaitForAnyTopic(t *testing.T) {
+	conn := ensureKafkaTLSAvailable(t)
+
+	if err := clearAllTopics(conn); err != nil {
+		t.Fatalf("Unable to clear topics to execute test: %v.", err)
+	}
+
+	if err := resourceAwait(t, "kafkas://localhost:9093#topics&tls=skip-verify"); err == nil {
+		t.Errorf("Should not have proceeded, but it did, despite having no topics.")
+	}
+
+	topicConfig := kafka.TopicConfig{
+		Topic:             newString(20), // Ensure that a random name is used
+		NumPartitions:     2,
+		ReplicationFactor: 1,
+	}
+
+	if err := conn.CreateTopics(topicConfig); err != nil {
+		t.Fatalf("Unable to create topic to proceed with testing: %v.", err)
+	}
+
+	if err := resourceAwait(t, "kafkas://localhost:9093#tls=skip-verify&topics"); err != nil {
+		t.Errorf("Should have proceeded, but didn't, despite having topics: %v.", err)
+	}
+}
+
+func TestKafkaTLSResource_AwaitForSpecificTopic(t *testing.T) {
+	conn := ensureKafkaTLSAvailable(t)
+
+	if err := clearAllTopics(conn); err != nil {
+		t.Fatalf("Unable to clear topics to execute test: %v.", err)
+	}
+
+	topicConfig1 := kafka.TopicConfig{
+		Topic:             newString(20), // Ensure that a random name is used
+		NumPartitions:     2,
+		ReplicationFactor: 1,
+	}
+
+	resource1 := fmt.Sprintf("kafkas://localhost:9093#tls=skip-verify&topics=%v", topicConfig1.Topic)
+	if err := resourceAwait(t, resource1); err == nil {
+		t.Errorf("Should not have proceeded, but it did, despite having no topics.")
+	}
+
+	if err := conn.CreateTopics(topicConfig1); err != nil {
+		t.Fatalf("Unable to create topic to proceed with testing: %v.", err)
+	}
+
+	if err := resourceAwait(t, resource1); err != nil {
+		t.Errorf("Should have proceeded, but didn't, despite the required topic existing: %v.", err)
+	}
+
+	topicConfig2 := kafka.TopicConfig{
+		Topic:             newString(20), // Ensure that a random name is used
+		NumPartitions:     2,
+		ReplicationFactor: 1,
+	}
+
+	resource2 := fmt.Sprintf("kafkas://localhost:9093#tls=skip-verify&topics=%v,%v", topicConfig1.Topic, topicConfig2.Topic)
+	if err := resourceAwait(t, resource2); err == nil {
+		t.Errorf("Should not have proceeded, but it did, despite having only one topic required.")
+	}
+
+	if err := conn.CreateTopics(topicConfig2); err != nil {
+		t.Fatalf("Unable to create topic to proceed with testing: %v.", err)
+	}
+
+	if err := resourceAwait(t, resource2); err != nil {
+		t.Errorf("Should have proceeded, but didn't, despite the required topics existing: %v.", err)
+	}
+}
+
 func clearAllTopics(conn *kafka.Conn) error {
 	topics, err := existingTopics(conn)
 	if err != nil {
@@ -149,6 +235,18 @@ func resourceAwait(t *testing.T, s string) error {
 func ensureKafkaAvailable(t *testing.T) *kafka.Conn {
 	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
 	conn, err := kafka.DialContext(ctx, "tcp", "localhost:9092")
+	if err != nil {
+		t.Skipf("No kafka available for testing (%v), skipping.", err)
+	}
+	return conn
+}
+
+func ensureKafkaTLSAvailable(t *testing.T) *kafka.Conn {
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	dialer := &kafka.Dialer{
+		TLS: &tls.Config{InsecureSkipVerify: true},
+	}
+	conn, err := dialer.DialContext(ctx, "tcp", "localhost:9093")
 	if err != nil {
 		t.Skipf("No kafka available for testing (%v), skipping.", err)
 	}

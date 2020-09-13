@@ -20,11 +20,13 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type kafkaResource struct {
@@ -34,7 +36,7 @@ type kafkaResource struct {
 func (r *kafkaResource) Await(ctx context.Context) error {
 	r.normalize()
 
-	conn, err := kafka.DialContext(ctx, "tcp", r.URL.Host)
+	conn, err := r.dialer().DialContext(ctx, "tcp", r.URL.Host)
 	if err != nil {
 		return err
 	}
@@ -55,9 +57,37 @@ func (r *kafkaResource) Await(ctx context.Context) error {
 	return nil
 }
 
+func (r *kafkaResource) dialer() *kafka.Dialer {
+	return &kafka.Dialer{
+		Timeout:   10 * time.Second,
+		DualStack: true,
+		TLS:       r.tlsConfig(),
+	}
+}
+
+func (r *kafkaResource) tlsConfig() *tls.Config {
+	if r.URL.Scheme == "kafkas" {
+		return &tls.Config{InsecureSkipVerify: r.skipTLSVerification()}
+	}
+	return nil
+}
+
+func (r *kafkaResource) skipTLSVerification() bool {
+	opts := parseFragment(r.URL.Fragment)
+	vals, ok := opts["tls"]
+	return ok && len(vals) == 1 && vals[0] == "skip-verify"
+}
+
 func (r *kafkaResource) normalize() {
 	if len(r.URL.Port()) == 0 {
-		r.URL.Host = fmt.Sprintf("%v:9092", r.URL.Hostname())
+		var defaultPort int
+		switch r.URL.Scheme {
+		case "kafka":
+			defaultPort = 9092
+		case "kafkas":
+			defaultPort = 9093
+		}
+		r.URL.Host = fmt.Sprintf("%v:%v", r.URL.Hostname(), defaultPort)
 	}
 }
 

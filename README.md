@@ -159,9 +159,12 @@ classified as available as soon as the database was found.
 is established and, optionally, a set of topics could be found. 
 Unavailable otherwise.
 
-**URL syntax**: `kafka://<host>[:<port>][#<fragment>]`
+**URL syntax**: `kafka[s]://<host>[:<port>][#<fragment>]`
 
-If no `port` is set, `9092` will be used as default.
+Using `kafkas` scheme enables TLS/SSL encrypted connection to the server.
+
+If no `port` is set, `9092` will be used as default for `kafka` scheme, or
+`9093` for `kafkas` scheme.
 
 **Fragment**:
 
@@ -169,6 +172,8 @@ If no `port` is set, `9092` will be used as default.
   resource's broker must at least contain one topic. If `topics` present with
   values set, the resource's broker must at least contain the
   specified topics (comma-separated names).
+  
+- `tls=skip-verify`:  When used, it skips TLS check for `kafkas` resources.
 
 
 ### Command Resource
