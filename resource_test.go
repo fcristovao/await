@@ -63,7 +63,7 @@ func TestParseResourcesSuccess(t *testing.T) {
 }
 
 func TestParseResourcesFailure(t *testing.T) {
-	_, err := parseResources([]string{"//foo test"})
+	_, err := parseResource("//foo test")
 	if err == nil {
 		t.Errorf("expected error parsing invalid ressource")
 	}

@@ -39,6 +39,14 @@ func (e *unavailabilityError) Error() string {
 	return e.Reason.Error()
 }
 
+func parseResource(urlAsString string) (resource, error) {
+	resources, err := parseResources([]string{urlAsString})
+	if err != nil {
+		return nil, err
+	}
+	return resources[0], nil
+}
+
 func parseResources(urlArgs []string) ([]resource, error) {
 	var resources []resource
 	for _, urlArg := range urlArgs {
@@ -71,6 +79,8 @@ func identifyResource(u url.URL) (resource, error) {
 		return &postgresqlResource{u}, nil
 	case "mysql":
 		return &mysqlResource{u}, nil
+	case "kafka":
+		return &kafkaResource{u}, nil
 	case "":
 		return &commandResource{u}, nil
 	default:
