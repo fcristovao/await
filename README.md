@@ -81,7 +81,7 @@ Unavailable otherwise.
 **Availability**: Available when a connection to a given server is established.
 Unavailable otherwise.
 
-**URL syntax**: `tcp[4|6]://<host>[:<port>]`
+**URL syntax**: `tcp[4|6]://<host>:<port>`
 
 
 ### File Resource
