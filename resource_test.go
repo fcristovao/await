@@ -43,6 +43,11 @@ func TestParseResourcesSuccess(t *testing.T) {
 
 		"mysql://user:pass@localhost:3306/dbname?query=val#fragment",
 
+		"kafka://localhost",
+		"kafka://localhost:9092",
+		"kafka://localhost:9092#topics",
+		"kafka://localhost:9092#topics=t1,t2",
+
 		"command",
 		"command with args",
 		"relative/path/to/command",
