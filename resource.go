@@ -34,8 +34,17 @@ type unavailabilityError struct {
 	Reason error
 }
 
+type resourceConfigError struct {
+	Reason error
+}
+
 // Error implements the error interface.
 func (e *unavailabilityError) Error() string {
+	return e.Reason.Error()
+}
+
+// Error implements the error interface.
+func (e *resourceConfigError) Error() string {
 	return e.Reason.Error()
 }
 
@@ -95,4 +104,14 @@ func parseFragment(fragment string) url.Values {
 	delete(v, "")
 
 	return v
+}
+
+func getOptOrDefault(url url.URL, key string, defaultVal string) string {
+	opts := parseFragment(url.Fragment)
+	if val, ok := opts[key]; ok {
+		if len(val) > 0 && val[0] != "" {
+			return val[0]
+		}
+	}
+	return defaultVal
 }

@@ -205,6 +205,18 @@ func TestKafkaTLSResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 }
 
+func TestKafkaTLSWithSASLResource_Await(t *testing.T) {
+	ensureKafkaTLSWithSASLAvailable(t)
+
+	if err := resourceAwait(t, "kafkas://localhost:9094#tls=skip-verify"); err == nil {
+		t.Errorf("Should have failed to Kafka via TLS with SCRAM authentication, but didn't.")
+	}
+
+	if err := resourceAwait(t, "kafkas://user:password@localhost:9094#tls=skip-verify"); err != nil {
+		t.Errorf("Should have connected to Kafka via TLS with SCRAM authentication, but failed to: %v.", err)
+	}
+}
+
 func clearAllTopics(conn *kafka.Conn) error {
 	topics, err := existingTopics(conn)
 	if err != nil {
@@ -247,6 +259,18 @@ func ensureKafkaTLSAvailable(t *testing.T) *kafka.Conn {
 		TLS: &tls.Config{InsecureSkipVerify: true},
 	}
 	conn, err := dialer.DialContext(ctx, "tcp", "localhost:9093")
+	if err != nil {
+		t.Skipf("No kafka available for testing (%v), skipping.", err)
+	}
+	return conn
+}
+
+func ensureKafkaTLSWithSASLAvailable(t *testing.T) *kafka.Conn {
+	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
+	dialer := &kafka.Dialer{
+		TLS: &tls.Config{InsecureSkipVerify: true},
+	}
+	conn, err := dialer.DialContext(ctx, "tcp", "localhost:9094")
 	if err != nil {
 		t.Skipf("No kafka available for testing (%v), skipping.", err)
 	}

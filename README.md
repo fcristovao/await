@@ -159,7 +159,7 @@ classified as available as soon as the database was found.
 is established and, optionally, a set of topics could be found. 
 Unavailable otherwise.
 
-**URL syntax**: `kafka[s]://<host>[:<port>][#<fragment>]`
+**URL syntax**: `kafka[s]://[<user>[:<pass>]@]<host>[:<port>][#<fragment>]`
 
 Using `kafkas` scheme enables TLS/SSL encrypted connection to the server.
 
@@ -175,6 +175,11 @@ If no `port` is set, `9092` will be used as default for `kafka` scheme, or
   
 - `tls=skip-verify`:  When used, it skips TLS check for `kafkas` resources.
 
+- `sasl=[plain|scram-sha-256|scram-sha-512]`: 
+  Only relevant when setting username and password. Default is `plain`. 
+  See [Kafka's SASL configuration](https://kafka.apache.org/documentation/#security_sasl_config)
+  and [Kafka's SASL SCRAM configuration](https://kafka.apache.org/documentation/#security_sasl_scram)
+  for more details.
 
 ### Command Resource
 

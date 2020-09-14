@@ -23,10 +23,14 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/segmentio/kafka-go"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/segmentio/kafka-go"
+	"github.com/segmentio/kafka-go/sasl"
+	"github.com/segmentio/kafka-go/sasl/plain"
+	"github.com/segmentio/kafka-go/sasl/scram"
 )
 
 type kafkaResource struct {
@@ -36,7 +40,7 @@ type kafkaResource struct {
 func (r *kafkaResource) Await(ctx context.Context) error {
 	r.normalize()
 
-	conn, err := r.dialer().DialContext(ctx, "tcp", r.URL.Host)
+	conn, err := r.conn(ctx)
 	if err != nil {
 		return err
 	}
@@ -57,12 +61,29 @@ func (r *kafkaResource) Await(ctx context.Context) error {
 	return nil
 }
 
-func (r *kafkaResource) dialer() *kafka.Dialer {
-	return &kafka.Dialer{
-		Timeout:   10 * time.Second,
-		DualStack: true,
-		TLS:       r.tlsConfig(),
+func (r *kafkaResource) conn(ctx context.Context) (*kafka.Conn, error) {
+	dialer, err := r.dialer()
+	if err != nil {
+		return nil, err
 	}
+	conn, err := dialer.DialContext(ctx, "tcp", r.URL.Host)
+	if err != nil {
+		return nil, err
+	}
+	return conn, nil
+}
+
+func (r *kafkaResource) dialer() (*kafka.Dialer, error) {
+	mechanism, err := r.saslMechanism()
+	if err != nil {
+		return nil, err
+	}
+	return &kafka.Dialer{
+		Timeout:       10 * time.Second,
+		DualStack:     true,
+		TLS:           r.tlsConfig(),
+		SASLMechanism: mechanism,
+	}, nil
 }
 
 func (r *kafkaResource) tlsConfig() *tls.Config {
@@ -72,10 +93,34 @@ func (r *kafkaResource) tlsConfig() *tls.Config {
 	return nil
 }
 
+func (r *kafkaResource) saslMechanism() (sasl.Mechanism, error) {
+	userInfo := r.URL.User
+	if userInfo != nil {
+		password, _ := userInfo.Password()
+		username := userInfo.Username()
+		mechanism := r.getOptOrDefault("sasl", "plain")
+		switch mechanism {
+		case "scram-sha-256":
+			return scram.Mechanism(scram.SHA256, username, password)
+		case "scram-sha-512":
+			return scram.Mechanism(scram.SHA512, username, password)
+		case "plain":
+			return plain.Mechanism{Username: username, Password: password}, nil
+		default:
+			return nil, &resourceConfigError{
+				Reason: fmt.Errorf("%v: unknown value for 'sasl' configuration: %v", r.URL.String(), mechanism),
+			}
+		}
+	}
+	return nil, nil
+}
+
+func (r *kafkaResource) getOptOrDefault(key string, defaultVal string) string {
+	return getOptOrDefault(r.URL, key, defaultVal)
+}
+
 func (r *kafkaResource) skipTLSVerification() bool {
-	opts := parseFragment(r.URL.Fragment)
-	vals, ok := opts["tls"]
-	return ok && len(vals) == 1 && vals[0] == "skip-verify"
+	return r.getOptOrDefault("tls", "verify") == "skip-verify"
 }
 
 func (r *kafkaResource) normalize() {

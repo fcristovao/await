@@ -20,7 +20,11 @@
 
 package main
 
-import "testing"
+import (
+	"fmt"
+	"net/url"
+	"testing"
+)
 
 func TestParseResourcesSuccess(t *testing.T) {
 	ress := []string{
@@ -53,6 +57,10 @@ func TestParseResourcesSuccess(t *testing.T) {
 		"kafkas://localhost:9093#topics",
 		"kafkas://localhost:9093#topics=t1,t2",
 		"kafkas://localhost:9093#tls=skip-verify&topics=t1,t2",
+
+		"kafkas://user:password@localhost:9093#tls=skip-verify&topics=t1,t2",
+		"kafkas://user:password@localhost:9093#tls=skip-verify&topics=t1,t2&sasl=plain",
+		"kafkas://user:password@localhost:9093#tls=skip-verify&topics=t1,t2&sasl=scram-sha-256",
 
 		"command",
 		"command with args",
@@ -101,6 +109,29 @@ func TestParseFragment(t *testing.T) {
 			if expectedV, ok := expected[actualK]; !ok || actualV[0] != expectedV {
 				t.Errorf("unexpected parsed fragment k/v pair")
 			}
+		}
+	}
+}
+
+func TestGetOptOrDefault(t *testing.T) {
+	defaultVal := "default"
+	tests := map[string]string{
+		"":              defaultVal,
+		"=":             defaultVal, // invalid format, should be skipped
+		"=ignore":       defaultVal, // invalid format, should be skipped
+		"baz=1":         defaultVal, // not the entry we are looking for
+		"foo":           defaultVal,
+		"foo=":          defaultVal,
+		"foo=bar":       "bar",
+		"foo=bar&baz":   "bar",
+		"foo=bar&baz=1": "bar",
+		"foo=bar&foo=1": "bar", // take only the first value if multiple are set
+	}
+	for given, expected := range tests {
+		u, _ := url.Parse(fmt.Sprintf("http://somewhere/#%v", given))
+		actual := getOptOrDefault(*u, "foo", defaultVal)
+		if actual != expected {
+			t.Errorf("unexpected opt value: expected %v, got %v", expected, actual)
 		}
 	}
 }
