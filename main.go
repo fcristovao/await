@@ -31,7 +31,7 @@ import (
 	"time"
 )
 
-const version = "0.4.0"
+const version = "1.1.0"
 
 func main() {
 	var (

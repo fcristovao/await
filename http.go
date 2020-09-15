@@ -22,6 +22,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"net/http"
 	"net/url"
@@ -32,7 +33,16 @@ type httpResource struct {
 }
 
 func (r *httpResource) Await(ctx context.Context) error {
-	client := &http.Client{}
+	var client *http.Client
+
+	if skipTLSVerification(r) {
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		client = &http.Client{Transport: tr}
+	} else {
+		client = &http.Client{}
+	}
 
 	// IDEA(uwe): Use fragment to set method
 
@@ -60,4 +70,10 @@ func (r *httpResource) Await(ctx context.Context) error {
 	}
 
 	return &unavailabilityError{errors.New(resp.Status)}
+}
+
+func skipTLSVerification(r *httpResource) bool {
+	opts := parseFragment(r.URL.Fragment)
+	vals, ok := opts["tls"]
+	return ok && r.URL.Scheme == "https" && len(vals) == 1 && vals[0] == "skip-verify"
 }
