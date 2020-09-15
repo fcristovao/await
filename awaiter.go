@@ -67,10 +67,6 @@ func (a *awaiter) run(resources []resource) error {
 					if e, ok := latestErr.(*unavailabilityError); ok {
 						// transient error
 						a.logger.Debugf("Resource unavailable: %v", e)
-					} else if _, ok := latestErr.(*resourceConfigError); ok {
-						// Non-transient error (the resource is misconfigured)
-						cancel()
-						return
 					} else {
 						// Maybe transient error
 						a.logger.Errorf("Error: failed to await resource: %v", latestErr)

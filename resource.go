@@ -89,7 +89,7 @@ func identifyResource(u url.URL) (resource, error) {
 	case "mysql":
 		return &mysqlResource{u}, nil
 	case "kafka", "kafkas":
-		return &kafkaResource{u}, nil
+		return newKafkaResource(u)
 	case "":
 		return &commandResource{u}, nil
 	default:

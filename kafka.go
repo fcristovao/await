@@ -37,9 +37,40 @@ type kafkaResource struct {
 	url.URL
 }
 
-func (r *kafkaResource) Await(ctx context.Context) error {
-	r.normalize()
+// Ensures that misconfigured Kafka Resources are not possible
+func newKafkaResource(u url.URL) (resource, error) {
+	if len(u.Port()) == 0 {
+		var defaultPort int
+		switch u.Scheme {
+		case "kafka":
+			defaultPort = 9092
+		case "kafkas":
+			defaultPort = 9093
+		}
+		u.Host = fmt.Sprintf("%v:%v", u.Hostname(), defaultPort)
+	}
+	mechanism := getOptOrDefault(u, "sasl", "")
+	switch mechanism {
+	case "plain", "scram-sha-256", "scram-sha-512", "":
+		break
+	default:
+		return nil, &resourceConfigError{
+			Reason: fmt.Errorf("%v: unknown value for 'sasl' configuration: %v", u.String(), mechanism),
+		}
+	}
+	tls := getOptOrDefault(u, "tls", "")
+	switch tls {
+	case "skip-verify", "":
+		break
+	default:
+		return nil, &resourceConfigError{
+			Reason: fmt.Errorf("%v: unknown value for 'tls' configuration: %v", u.String(), tls),
+		}
+	}
+	return &kafkaResource{u}, nil
+}
 
+func (r *kafkaResource) Await(ctx context.Context) error {
 	conn, err := r.conn(ctx)
 	if err != nil {
 		return err
@@ -105,11 +136,9 @@ func (r *kafkaResource) saslMechanism() (sasl.Mechanism, error) {
 		case "scram-sha-512":
 			return scram.Mechanism(scram.SHA512, username, password)
 		case "plain":
-			return plain.Mechanism{Username: username, Password: password}, nil
+			fallthrough
 		default:
-			return nil, &resourceConfigError{
-				Reason: fmt.Errorf("%v: unknown value for 'sasl' configuration: %v", r.URL.String(), mechanism),
-			}
+			return plain.Mechanism{Username: username, Password: password}, nil
 		}
 	}
 	return nil, nil
@@ -121,19 +150,6 @@ func (r *kafkaResource) getOptOrDefault(key string, defaultVal string) string {
 
 func (r *kafkaResource) skipTLSVerification() bool {
 	return r.getOptOrDefault("tls", "verify") == "skip-verify"
-}
-
-func (r *kafkaResource) normalize() {
-	if len(r.URL.Port()) == 0 {
-		var defaultPort int
-		switch r.URL.Scheme {
-		case "kafka":
-			defaultPort = 9092
-		case "kafkas":
-			defaultPort = 9093
-		}
-		r.URL.Host = fmt.Sprintf("%v:%v", r.URL.Hostname(), defaultPort)
-	}
 }
 
 func (r *kafkaResource) shouldWaitForTopics() (bool, []string) {

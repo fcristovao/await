@@ -74,17 +74,26 @@ func TestParseResourcesSuccess(t *testing.T) {
 
 	actualRess, err := parseResources(ress)
 	if err != nil {
-		t.Errorf("failed to parse ressources: %#v", err.Error())
+		t.Errorf("failed to parse resources: %#v", err.Error())
 	}
 	if len(actualRess) != len(ress) {
-		t.Errorf("missing parsed ressources")
+		t.Errorf("missing parsed resources")
 	}
 }
 
 func TestParseResourcesFailure(t *testing.T) {
-	_, err := parseResource("//foo test")
-	if err == nil {
-		t.Errorf("expected error parsing invalid ressource")
+	ress := []string{
+		"//foo test",
+
+		"kafkas://localhost:9093#&tls=skipverify", // notice it should be `skip-verify`
+		"kafkas://user:password@localhost:9093#&sasl=wrong",
+	}
+
+	for _, urlString := range ress {
+		_, err := parseResource(urlString)
+		if err == nil {
+			t.Errorf("expected error parsing invalid resource '%v', but got none", urlString)
+		}
 	}
 }
 
