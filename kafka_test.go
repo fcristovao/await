@@ -34,7 +34,7 @@ import (
 // https://hub.docker.com/r/bitnami/kafka/
 //
 // Basically, just run:
-// $ curl -sSL https://raw.githubusercontent.com/bitnami/bitnami-docker-kafka/master/docker-compose.yml > docker-compose.yml
+// $ cd testdata
 // $ docker-compose up -d
 //
 // To stop it, run:
