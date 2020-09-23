@@ -80,7 +80,7 @@ func TestKafkaResource_AwaitForAnyTopic(t *testing.T) {
 	}
 
 	topicConfig := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -102,7 +102,7 @@ func TestKafkaResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 
 	topicConfig1 := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -121,7 +121,7 @@ func TestKafkaResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 
 	topicConfig2 := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -165,7 +165,7 @@ func TestKafkaTLSResource_AwaitForAnyTopic(t *testing.T) {
 	}
 
 	topicConfig := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -187,7 +187,7 @@ func TestKafkaTLSResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 
 	topicConfig1 := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -206,7 +206,7 @@ func TestKafkaTLSResource_AwaitForSpecificTopic(t *testing.T) {
 	}
 
 	topicConfig2 := kafka.TopicConfig{
-		Topic:             newString(20), // Ensure that a random name is used
+		Topic:             randomString(20), // Ensure that a random name is used
 		NumPartitions:     2,
 		ReplicationFactor: 1,
 	}
@@ -309,7 +309,7 @@ const charset = "abcdefghijklmnopqrstuvwxyz" +
 
 var seededRand = rand.New(rand.NewSource(time.Now().UnixNano()))
 
-func newString(length int) string {
+func randomString(length int) string {
 	b := make([]byte, length)
 	for i := range b {
 		b[i] = charset[seededRand.Intn(len(charset))]
