@@ -73,23 +73,42 @@ func newKafkaResource(u url.URL) (resource, error) {
 func (r *kafkaResource) Await(ctx context.Context) error {
 	conn, err := r.conn(ctx)
 	if err != nil {
-		return err
+		return &unavailabilityError{err}
 	}
 	defer func() { _ = conn.Close() }()
 
-	// Just opening a connection isn't enough (as any open port would succeed)
-	// So ask for the brokers to ensure we are talking with a Kafka cluster:
-	if _, err := conn.Brokers(); err != nil {
-		return &unavailabilityError{err}
-	}
+	// Apparently, kafka-go disregards timeouts when asking for brokers.
+	// So, we setup our own context to prevent the code from "hanging".
+	ctx, cancel := context.WithCancel(ctx)
+	var latestErr error
 
-	if shouldWait, topics := r.shouldWaitForTopics(); shouldWait {
-		if err := awaitTopics(conn, topics); err != nil {
-			return err
+	// There won't be a coroutine leak, because closing the connection will
+	// unblock those calls, and we always close the connection on this method's return.
+	go func() {
+		// Just opening a connection isn't enough (as any open port would succeed)
+		// So ask for the brokers to ensure we are talking with a Kafka cluster:
+		if _, err := conn.Brokers(); err != nil {
+			latestErr = &unavailabilityError{err}
+		} else if shouldWait, topics := r.shouldWaitForTopics(); shouldWait {
+			if err := awaitTopics(conn, topics); err != nil {
+				latestErr = err
+			}
 		}
-	}
+		cancel()
+	}()
 
-	return nil
+	<-ctx.Done()
+	switch ctx.Err() {
+	case context.Canceled:
+		return latestErr
+	case context.DeadlineExceeded:
+		if latestErr == nil {
+			latestErr = errors.New("failure to get brokers from Kafka")
+		}
+		return &unavailabilityError{latestErr}
+	default:
+		return errors.New("unknown error")
+	}
 }
 
 func (r *kafkaResource) conn(ctx context.Context) (*kafka.Conn, error) {
