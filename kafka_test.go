@@ -23,6 +23,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"math/rand"
+	"net"
 	"testing"
 	"time"
 
@@ -39,6 +40,25 @@ import (
 //
 // To stop it, run:
 // $ docker-compose down
+
+func TestKafkaResource_FailAwaitWhenKafkaIsNotThere(t *testing.T) {
+	port := "55373"
+	resource := fmt.Sprintf("kafka://localhost:%v", port)
+	ensurePortClosed(t, port)
+
+	if err := resourceAwait(t, resource); err == nil {
+		t.Errorf("Should have failed to connect to Kafka, but succeeded.")
+	}
+
+	// Setup an HTTP server on the port that we say Kafka is.
+	// Allows us to test that await will actually work only when connecting to a Kakfka cluster.
+	shutdownServer := setupHttpServer(t, port)
+	defer shutdownServer()
+
+	if err := resourceAwait(t, resource); err == nil {
+		t.Errorf("Should have failed to connect to Kafka, but succeeded.")
+	}
+}
 
 func TestKafkaResource_Await(t *testing.T) {
 	ensureKafkaAvailable(t)
@@ -242,6 +262,13 @@ func resourceAwait(t *testing.T, s string) error {
 	}
 	ctx, _ := context.WithTimeout(context.Background(), 1*time.Second)
 	return resource.Await(ctx)
+}
+
+func ensurePortClosed(t *testing.T, port string) {
+	address := net.JoinHostPort("localhost", port)
+	if conn, _ := net.DialTimeout("tcp", address, 1*time.Second); conn != nil {
+		t.Skipf("Connecting to %v succeded, when we require it to fail to proceed with testing. Skipping", address)
+	}
 }
 
 func ensureKafkaAvailable(t *testing.T) *kafka.Conn {
