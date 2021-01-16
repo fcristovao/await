@@ -39,7 +39,7 @@ import (
 )
 
 func TestTLSSkipVerify(t *testing.T) {
-	shutdownServer := setupHttpsServer(t)
+	shutdownServer := setupHttpsServer(t, "55372")
 	defer shutdownServer()
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
@@ -58,23 +58,23 @@ func TestTLSSkipVerify(t *testing.T) {
 	}
 }
 
-func setupHttpsServer(t *testing.T) func() {
+func setupHttpServer(t *testing.T, port string) func() {
+	server, ln := createServer(t, port)
+
+	go func() {
+		_ = server.Serve(ln)
+	}()
+
+	return func() {
+		_ = server.Close()
+		_ = ln.Close()
+	}
+}
+
+func setupHttpsServer(t *testing.T, port string) func() {
 	certFile, keyFile, cleanupCerts := setupTestCertificates(t)
 
-	server := &http.Server{
-		Addr: ":55372",
-	}
-
-	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
-		_, _ = fmt.Fprint(res, "Hello: "+req.Host)
-	})
-
-	// The separation of the listening socket from the serving of the http requests
-	// is to guarantee one can immediately contact the server on this method's return
-	ln, err := net.Listen("tcp", ":55372")
-	if err != nil {
-		t.Errorf("Unable to setup listening socket for webserver: %v", err)
-	}
+	server, ln := createServer(t, port)
 
 	go func() {
 		_ = server.ServeTLS(ln, certFile, keyFile)
@@ -85,6 +85,31 @@ func setupHttpsServer(t *testing.T) func() {
 		_ = ln.Close()
 		cleanupCerts()
 	}
+}
+
+func createServer(t *testing.T, port string) (*http.Server, net.Listener) {
+	address := net.JoinHostPort("localhost", port)
+
+	// create `ServerMux`
+	mux := http.NewServeMux()
+
+	// create a default route handler
+	mux.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		_, _ = fmt.Fprint(res, "Hello: "+req.Host)
+	})
+
+	server := &http.Server{
+		Addr:    address,
+		Handler: mux,
+	}
+
+	// The separation of the listening socket from the serving of the http requests
+	// is to guarantee one can immediately contact the server on this method's return
+	ln, err := net.Listen("tcp", address)
+	if err != nil {
+		t.Errorf("Unable to setup listening socket for webserver: %v", err)
+	}
+	return server, ln
 }
 
 func setupTestCertificates(t *testing.T) (string, string, func()) {

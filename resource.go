@@ -34,9 +34,26 @@ type unavailabilityError struct {
 	Reason error
 }
 
+type resourceConfigError struct {
+	Reason error
+}
+
 // Error implements the error interface.
 func (e *unavailabilityError) Error() string {
 	return e.Reason.Error()
+}
+
+// Error implements the error interface.
+func (e *resourceConfigError) Error() string {
+	return e.Reason.Error()
+}
+
+func parseResource(urlAsString string) (resource, error) {
+	resources, err := parseResources([]string{urlAsString})
+	if err != nil {
+		return nil, err
+	}
+	return resources[0], nil
 }
 
 func parseResources(urlArgs []string) ([]resource, error) {
@@ -71,6 +88,8 @@ func identifyResource(u url.URL) (resource, error) {
 		return &postgresqlResource{u}, nil
 	case "mysql":
 		return &mysqlResource{u}, nil
+	case "kafka", "kafkas":
+		return newKafkaResource(u)
 	case "":
 		return &commandResource{u}, nil
 	default:
@@ -85,4 +104,14 @@ func parseFragment(fragment string) url.Values {
 	delete(v, "")
 
 	return v
+}
+
+func getOptOrDefault(url url.URL, key string, defaultVal string) string {
+	opts := parseFragment(url.Fragment)
+	if val, ok := opts[key]; ok {
+		if len(val) > 0 && val[0] != "" {
+			return val[0]
+		}
+	}
+	return defaultVal
 }

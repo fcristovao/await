@@ -16,6 +16,10 @@ ignored = [
   name = "github.com/lib/pq"
   revision = "88edab0803230a3898347e77b474f8c1820a1f20"
 
+[[constraint]]
+  name = "github.com/segmentio/kafka-go"
+  version = "v0.3.10"
+
 [prune]
   non-go = true
   go-tests = true

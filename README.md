@@ -53,7 +53,7 @@ Some resources provided additional functionally encoded as fragment
 `k1|k1=|k1=v1,v2,v3...[&k2=v1&...]`.
 E.g.: http://example.com/#ssl&foo=bar,baz&i=j
 
-Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Command.
+Valid resources are: HTTP, Websocket, TCP, File, PostgreSQL, MySQL, Kafka and Command.
 
 
 ### HTTP Resource
@@ -81,7 +81,7 @@ Unavailable otherwise.
 **Availability**: Available when a connection to a given server is established.
 Unavailable otherwise.
 
-**URL syntax**: `tcp[4|6]://<host>[:<port>]`
+**URL syntax**: `tcp[4|6]://<host>:<port>`
 
 
 ### File Resource
@@ -152,6 +152,34 @@ classified as available as soon as the database was found.
   value present, the resource's database scheme must at least contain the
   specified tables. Using this key requires to provide a database name.
 
+
+### Kafka Resource
+
+**Availability**: Available when a connection to a given Kafka broker
+is established and, optionally, a set of topics could be found. 
+Unavailable otherwise.
+
+**URL syntax**: `kafka[s]://[<user>[:<pass>]@]<host>[:<port>][#<fragment>]`
+
+Using `kafkas` scheme enables TLS/SSL encrypted connection to the server.
+
+If no `port` is set, `9092` will be used as default for `kafka` scheme, or
+`9093` for `kafkas` scheme.
+
+**Fragment**:
+
+- `topics[=t1,t2,...]`: If `topics` present but with no values, the
+  resource's broker must at least contain one topic. If `topics` present with
+  values set, the resource's broker must at least contain the
+  specified topics (comma-separated names).
+  
+- `tls=skip-verify`:  When used, it skips TLS check for `kafkas` resources.
+
+- `sasl=[plain|scram-sha-256|scram-sha-512]`: 
+  Only relevant when setting username and password. Default is `plain`. 
+  See [Kafka's SASL configuration](https://kafka.apache.org/documentation/#security_sasl_config)
+  and [Kafka's SASL SCRAM configuration](https://kafka.apache.org/documentation/#security_sasl_scram)
+  for more details.
 
 ### Command Resource
 
