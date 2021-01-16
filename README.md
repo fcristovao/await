@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/betalo-sweden/await.svg?branch=master)](https://travis-ci.org/betalo-sweden/await)
+[![Build Status](https://travis-ci.com/fcristovao/await.svg?branch=master)](https://travis-ci.com/fcristovao/await)
 
 # await
 
@@ -15,14 +15,20 @@ dependent resources to become available. On success the command returns code
 Additionally a command can be specified which gets executed after all dependent
 resources became available.
 
+## History
+
+This repository is a fork of [Betalo's `await`](https://github.com/betalo-sweden/await).
+Since the company [decided to no longer support it](https://github.com/betalo-sweden/await/pull/41#issuecomment-760841764),
+I forked it and started adding features myself.
+This repository will only contain versions 1.2 and above due to that.
 
 ## Installation
 
-    go get -u github.com/betalo-sweden/await
+    go get -u github.com/fcristovao/await
 
 or
 
-    curl -s -f -L -o await https://github.com/betalo-sweden/await/releases/download/v0.4.0/await-linux-amd64
+    curl -s -f -L -o await https://github.com/fcristovao/await/releases/download/v1.2.0/await-linux-amd64
     chmod +x await
 
 
