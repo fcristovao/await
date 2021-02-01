@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/betalo-sweden/await.svg?branch=master)](https://travis-ci.org/betalo-sweden/await)
 
+# This repository is no longer maintained.
+
+Issue reports and pull requests will not be attended.
+Please fork this repository if you wish to make changes.
+
 # await
 
 Await availability of resources.
