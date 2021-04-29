@@ -71,6 +71,8 @@ func identifyResource(u url.URL) (resource, error) {
 		return &postgresqlResource{u}, nil
 	case "mysql":
 		return &mysqlResource{u}, nil
+	case "amqp", "amqps":
+		return &amqpResource{u}, nil
 	case "":
 		return &commandResource{u}, nil
 	default:
