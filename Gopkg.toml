@@ -13,6 +13,10 @@ ignored = [
   version = "v1.2.0"
 
 [[constraint]]
+  name = "github.com/streadway/amqp"
+  version = "v1.0.0"
+
+[[constraint]]
   name = "github.com/lib/pq"
   revision = "88edab0803230a3898347e77b474f8c1820a1f20"
 

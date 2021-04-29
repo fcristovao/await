@@ -2,27 +2,46 @@
 
 
 [[projects]]
+  digest = "1:5c87eb94fcaec9c188aff44fc9a48325e074ff3ad22dfc3346f8d6bb0de4c1e5"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
 
 [[projects]]
+  digest = "1:3b708ebf63bfa9ba3313bedb8526bc0bb284e51474e65e958481476a9d4a12aa"
   name = "github.com/gorilla/websocket"
   packages = ["."]
+  pruneopts = "NUT"
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:f524f5a04ab8b473961d9cc79fb947b9a91188437abf5a39e333e9a58230435d"
   name = "github.com/lib/pq"
   packages = [
     ".",
-    "oid"
+    "oid",
   ]
+  pruneopts = "NUT"
   revision = "88edab0803230a3898347e77b474f8c1820a1f20"
+
+[[projects]]
+  digest = "1:57f392e259be48a194193dfce58089107d87e4f370b584e0da451f06d7c2ac88"
+  name = "github.com/streadway/amqp"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "1c71cc93ed716f9a6f4c2ae8955c25f9176d9f19"
+  version = "v1.0.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e81f5dafbbf45ac3c8ccb651d81627f70fe1f0b7e270ad1988a3cd4089fcd9a1"
+  input-imports = [
+    "github.com/go-sql-driver/mysql",
+    "github.com/gorilla/websocket",
+    "github.com/lib/pq",
+    "github.com/streadway/amqp",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

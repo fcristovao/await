@@ -43,6 +43,9 @@ func TestParseResourcesSuccess(t *testing.T) {
 
 		"mysql://user:pass@localhost:3306/dbname?query=val#fragment",
 
+		"amqp://host:5672/vhost",
+		"amqps://host:5672/vhost",
+
 		"command",
 		"command with args",
 		"relative/path/to/command",
