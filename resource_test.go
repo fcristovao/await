@@ -62,6 +62,9 @@ func TestParseResourcesSuccess(t *testing.T) {
 		"kafkas://user:password@localhost:9093#tls=skip-verify&topics=t1,t2&sasl=plain",
 		"kafkas://user:password@localhost:9093#tls=skip-verify&topics=t1,t2&sasl=scram-sha-256",
 
+		"amqp://host:5672/vhost",
+		"amqps://host:5672/vhost",
+
 		"command",
 		"command with args",
 		"relative/path/to/command",
