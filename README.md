@@ -28,7 +28,7 @@ This repository will only contain versions 1.2 and above due to that.
 
 or
 
-    curl -s -f -L -o await https://github.com/fcristovao/await/releases/download/v1.2.0/await-linux-amd64
+    curl -s -f -L -o await https://github.com/fcristovao/await/releases/download/v1.2.1/await-linux-amd64
     chmod +x await
 
 
