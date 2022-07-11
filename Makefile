@@ -5,7 +5,7 @@ all: build
 
 .PHONY: build
 build:
-	go get -v github.com/fcristovao/await
+	go install -v github.com/fcristovao/await@latest
 	go build -v .
 
 .PHONY: copyright
@@ -48,6 +48,6 @@ test:
 
 .PHONY: rel
 rel:
-	go get -v github.com/fcristovao/await
+	go install -v github.com/fcristovao/await@latest
 	GOOS=darwin GOARCH=amd64 go build -v -o await-darwin-amd64 .
 	GOOS=linux  GOARCH=amd64 go build -v -o await-linux-amd64  .
