@@ -12,7 +12,7 @@ Optionally a timeout can be provided to specify how long to wait for all
 dependent resources to become available. On success the command returns code
 `0`, on failure it returns code `1`.
 
-Additionally a command can be specified which gets executed after all dependent
+Additionally, a command can be specified which gets executed after all dependent
 resources became available.
 
 ## History
