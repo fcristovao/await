@@ -28,7 +28,7 @@ This repository will only contain versions 1.2 and above due to that.
 
 or
 
-    curl -s -f -L -o await https://github.com/fcristovao/await/releases/download/v1.2.1/await-linux-amd64
+    curl -s -f -L -o await https://github.com/fcristovao/await/releases/download/v1.3.0/await-linux-amd64
     chmod +x await
 
 
@@ -158,6 +158,11 @@ classified as available as soon as the database was found.
   value present, the resource's database scheme must at least contain the
   specified tables. Using this key requires to provide a database name.
 
+### AMQP resource
+
+**Availability**: Available when a connection to the given AMQP server is established. Unavailable otherwise.
+
+**URL syntax**: `amqp[s]://[<user>[:<pass>]@]<host>[:<port>]/[<vhost>]`
 
 ### Kafka Resource
 
