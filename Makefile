@@ -5,7 +5,8 @@ all: build
 
 .PHONY: build
 build:
-	go build -v github.com/betalo-sweden/await
+	go get -v github.com/fcristovao/await
+	go build -v .
 
 .PHONY: copyright
 copyright:
@@ -47,5 +48,6 @@ test:
 
 .PHONY: rel
 rel:
-	GOOS=darwin GOARCH=amd64 go build -o await-darwin-amd64 github.com/betalo-sweden/await
-	GOOS=linux  GOARCH=amd64 go build -o await-linux-amd64  github.com/betalo-sweden/await
+	go get -v github.com/fcristovao/await
+	GOOS=darwin GOARCH=amd64 go build -v -o await-darwin-amd64 .
+	GOOS=linux  GOARCH=amd64 go build -v -o await-linux-amd64  .

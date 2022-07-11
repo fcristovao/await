@@ -14,7 +14,7 @@ ignored = [
 
 [[constraint]]
   name = "github.com/lib/pq"
-  revision = "88edab0803230a3898347e77b474f8c1820a1f20"
+  revision = "8c6de565f76fb5cd40a5c1b8ce583fbc3ba1bd0e"
 
 [[constraint]]
   name = "github.com/segmentio/kafka-go"
