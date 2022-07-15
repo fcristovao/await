@@ -42,6 +42,5 @@ test:
 
 .PHONY: rel
 rel:
-	go install -v github.com/fcristovao/await@latest
 	GOOS=darwin GOARCH=amd64 go build -v -o await-darwin-amd64 .
 	GOOS=linux  GOARCH=amd64 go build -v -o await-linux-amd64  .
