@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.com/fcristovao/await.svg?branch=master)](https://travis-ci.com/fcristovao/await)
-
+[![Build Status](https://github.com/fcristovao/await/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/fcristovao/await/actions/workflows/build.yml)
 # await
 
 Await availability of resources.
