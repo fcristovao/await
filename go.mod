@@ -1,4 +1,4 @@
-module await
+module github.com/fcristovao/await
 
 go 1.18
 
