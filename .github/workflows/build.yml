@@ -23,7 +23,7 @@ jobs:
         run: make build
 
       - name: Check await binary
-        run: await -V || exit 1
+        run: ./await -V || exit 1
 
       - name: Test
         run: make test
