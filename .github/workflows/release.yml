@@ -6,23 +6,14 @@ on:
     - '*'
 
 jobs:
-  release:
-
+  create_release:
     runs-on: ubuntu-latest
-
+    outputs:
+      upload_url: ${{ steps.create.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.18
-
-      - name: Make release
-        run: make rel
-
       - name: Create Release
-        id: create_release
+        id: create
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,24 +23,39 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Darwin binary
-        id: upload-darwin-release-asset
+  upload_binaries:
+    needs: create_release
+    strategy:
+      matrix:
+        platform-arch: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform-arch }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Make release
+        run: PLATFORM=${{ matrix.platform-arch }} make rel
+
+      - name: Upload amd64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./await-darwin-amd64
-          asset_name: await-darwin-amd64
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./await-${{ matrix.platform-arch }}-amd64
+          asset_name: await-${{ matrix.platform-arch }}-amd64
           asset_content_type: application/octet-stream
 
-      - name: Upload Linux binary
-        id: upload-linux-release-asset
+      - name: Upload arm64 binary
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./await-linux-amd64
-          asset_name: await-linux-amd64
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./await-${{ matrix.platform-arch }}-arm64
+          asset_name: await-${{ matrix.platform-arch }}-arm64
           asset_content_type: application/octet-stream
