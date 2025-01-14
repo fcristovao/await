@@ -27,8 +27,8 @@ jobs:
     needs: create_release
     strategy:
       matrix:
-        platform-arch: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.platform-arch }}
+        platform-arch: [ubuntu, macos]
+    runs-on: ${{ matrix.platform-arch }}-latest
     steps:
       - uses: actions/checkout@v3
 
